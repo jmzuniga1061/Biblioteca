@@ -22,11 +22,6 @@ async function handleResponse(response: Response) {
   return response.json();
 }
 
-function authHeaders() {
-  const token = getAuthToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 export async function login(email: string, password: string) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
