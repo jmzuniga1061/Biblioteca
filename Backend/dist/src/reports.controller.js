@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const reports_service_1 = require("./reports.service");
+const prisma_service_1 = require("./prisma.service");
 const auth_middleware_1 = require("./auth.middleware");
 const reports_middleware_1 = require("./reports.middleware");
 const router = (0, express_1.Router)();
-const reportsService = new reports_service_1.ReportsService();
+const prismaService = new prisma_service_1.PrismaService();
+const reportsService = new reports_service_1.ReportsService(prismaService);
 router.use(auth_middleware_1.authenticateToken, reports_middleware_1.authorizeReportsAccess);
 router.get("/loans/monthly", async (_req, res) => {
     try {

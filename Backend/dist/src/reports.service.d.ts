@@ -1,4 +1,7 @@
+import { PrismaService } from './prisma.service';
 export declare class ReportsService {
+    private readonly prisma;
+    constructor(prisma: PrismaService);
     loansMonthly(): Promise<{
         month: string;
         count: number;

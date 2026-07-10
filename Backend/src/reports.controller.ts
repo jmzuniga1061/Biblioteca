@@ -1,10 +1,13 @@
 import { Router, Response } from "express";
 import { ReportsService } from "./reports.service";
+import { PrismaService } from "./prisma.service";
 import { authenticateToken, AuthRequest } from "./auth.middleware";
 import { authorizeReportsAccess } from "./reports.middleware";
 
 const router = Router();
-const reportsService = new ReportsService();
+
+const prismaService = new PrismaService();
+const reportsService = new ReportsService(prismaService);
 
 router.use(authenticateToken, authorizeReportsAccess);
 

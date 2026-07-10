@@ -1,8 +1,15 @@
-import prisma from "./prisma";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from './prisma.service';
 
+@Injectable()
 export class ReportsService {
+
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
+
   async loansMonthly() {
-    const result = await prisma.$queryRawUnsafe<
+    const result = await this.prisma.$queryRawUnsafe<
       Array<{ month: string; count: number }>
     >(
       `SELECT TO_CHAR("loanDate", 'YYYY-MM') AS month, COUNT(*) AS count
@@ -11,11 +18,14 @@ export class ReportsService {
        ORDER BY month DESC`
     );
 
-    return result.map((row) => ({ month: row.month, count: Number(row.count) }));
+    return result.map((row) => ({
+      month: row.month,
+      count: Number(row.count),
+    }));
   }
 
   async booksTop(limit = 10) {
-    const result = await prisma.$queryRawUnsafe<
+    const result = await this.prisma.$queryRawUnsafe<
       Array<{ bookId: number; title: string; loanCount: number }>
     >(
       `SELECT b.id AS "bookId", b.title, COUNT(l.id) AS "loanCount"
@@ -26,12 +36,22 @@ export class ReportsService {
        LIMIT ${limit}`
     );
 
-    return result.map((row) => ({ bookId: Number(row.bookId), title: row.title, loanCount: Number(row.loanCount) }));
+    return result.map((row) => ({
+      bookId: Number(row.bookId),
+      title: row.title,
+      loanCount: Number(row.loanCount),
+    }));
   }
 
   async usersActive(limit = 10) {
-    const result = await prisma.$queryRawUnsafe<
-      Array<{ userId: number; name: string; email: string; roleName: string; loanCount: number }>
+    const result = await this.prisma.$queryRawUnsafe<
+      Array<{
+        userId: number;
+        name: string;
+        email: string;
+        roleName: string;
+        loanCount: number;
+      }>
     >(
       `SELECT u.id AS "userId", u.name, u.email, r.name AS "roleName", COUNT(l.id) AS "loanCount"
        FROM "User" u
@@ -42,13 +62,19 @@ export class ReportsService {
        LIMIT ${limit}`
     );
 
-    return result.map((row) => ({ userId: Number(row.userId), name: row.name, email: row.email, roleName: row.roleName, loanCount: Number(row.loanCount) }));
+    return result.map((row) => ({
+      userId: Number(row.userId),
+      name: row.name,
+      email: row.email,
+      roleName: row.roleName,
+      loanCount: Number(row.loanCount),
+    }));
   }
 
   async loansOverdue() {
     const now = new Date();
 
-    const loans = await prisma.loan.findMany({
+    const loans = await this.prisma.loan.findMany({
       where: {
         returnDate: null,
         loanDate: {
@@ -67,9 +93,27 @@ export class ReportsService {
 
     return loans.map((loan) => {
       const dueDate = new Date(loan.loanDate);
-      dueDate.setDate(dueDate.getDate() + (loan.user.role.name === "profesor" ? 365 : 10));
-      const daysOverdue = Math.max(0, Math.ceil((now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)));
-      const fine = loan.user.role.name === "profesor" ? 0 : daysOverdue * 2 * (loan.user.role.name === "estudiante" ? 0.5 : 1);
+
+      dueDate.setDate(
+        dueDate.getDate() + 
+        (loan.user.role.name === 'profesor' ? 365 : 10)
+      );
+
+      const daysOverdue = Math.max(
+        0,
+        Math.ceil(
+          (now.getTime() - dueDate.getTime()) /
+          (1000 * 60 * 60 * 24)
+        )
+      );
+
+      const fine =
+        loan.user.role.name === 'profesor'
+          ? 0
+          : daysOverdue *
+            2 *
+            (loan.user.role.name === 'estudiante' ? 0.5 : 1);
+
       return {
         loanId: loan.id,
         user: {
