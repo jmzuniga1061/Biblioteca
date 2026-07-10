@@ -2,13 +2,13 @@ export declare class CategoriesService {
     findAll(): Promise<({
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
@@ -20,13 +20,13 @@ export declare class CategoriesService {
     findById(categoryId: number): Promise<{
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
@@ -38,13 +38,13 @@ export declare class CategoriesService {
     createCategory(name: string, description?: string): Promise<{
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
@@ -59,13 +59,13 @@ export declare class CategoriesService {
     }): Promise<{
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];

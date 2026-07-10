@@ -9,8 +9,8 @@ export declare class LoansService {
             };
         } & {
             id: number;
-            name: string;
             email: string;
+            name: string;
             password: string;
             roleId: number;
             createdAt: Date;
@@ -28,9 +28,9 @@ export declare class LoansService {
             categoryId: number;
         };
     } & {
+        id: number;
         userId: number;
         returnDate: Date | null;
-        id: number;
         bookId: number;
         loanDate: Date;
         status: string;
@@ -44,8 +44,8 @@ export declare class LoansService {
             };
         } & {
             id: number;
-            name: string;
             email: string;
+            name: string;
             password: string;
             roleId: number;
             createdAt: Date;
@@ -63,9 +63,9 @@ export declare class LoansService {
             categoryId: number;
         };
     } & {
+        id: number;
         userId: number;
         returnDate: Date | null;
-        id: number;
         bookId: number;
         loanDate: Date;
         status: string;
@@ -80,8 +80,8 @@ export declare class LoansService {
                 };
             } & {
                 id: number;
-                name: string;
                 email: string;
+                name: string;
                 password: string;
                 roleId: number;
                 createdAt: Date;
@@ -99,9 +99,9 @@ export declare class LoansService {
                 categoryId: number;
             };
         } & {
+            id: number;
             userId: number;
             returnDate: Date | null;
-            id: number;
             bookId: number;
             loanDate: Date;
             status: string;

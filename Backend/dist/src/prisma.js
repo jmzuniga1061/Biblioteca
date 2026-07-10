@@ -35,7 +35,17 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 const client_1 = require("@prisma/client");
+const adapter_pg_1 = require("@prisma/adapter-pg");
 dotenv.config();
-const prisma = new client_1.PrismaClient();
+if (process.env.NODE_ENV === "test") {
+    dotenv.config({ path: ".env.test" });
+}
+const databaseUrl = process.env.DATABASE_URL ?? process.env.DATABASE_URL_TEST;
+if (!databaseUrl) {
+    throw new Error("DATABASE_URL or DATABASE_URL_TEST must be defined");
+}
+const prisma = new client_1.PrismaClient({
+    adapter: new adapter_pg_1.PrismaPg(databaseUrl),
+});
 exports.default = prisma;
 //# sourceMappingURL=prisma.js.map

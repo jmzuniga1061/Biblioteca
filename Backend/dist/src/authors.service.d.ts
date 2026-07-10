@@ -2,13 +2,13 @@ export declare class AuthorsService {
     findAll(): Promise<({
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
@@ -20,13 +20,13 @@ export declare class AuthorsService {
     findById(authorId: number): Promise<{
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
@@ -38,13 +38,13 @@ export declare class AuthorsService {
     createAuthor(name: string, biography?: string): Promise<{
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
@@ -59,13 +59,13 @@ export declare class AuthorsService {
     }): Promise<{
         books: {
             id: number;
+            createdAt: Date;
+            description: string | null;
             title: string;
             isbn: string;
-            description: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
             authorId: number;
             categoryId: number;
         }[];
