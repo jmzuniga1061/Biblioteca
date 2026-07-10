@@ -1,0 +1,65 @@
+import { NextFunction, Response } from "express";
+import { AuthRequest } from "./auth.middleware";
+import { LoansService } from "./loans.service";
+
+const loansService = new LoansService();
+
+export async function authorizeLoanCreation(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ error: "No autenticado" });
+  }
+
+  const allowed = ["cliente", "estudiante", "profesor"];
+  if (!allowed.includes(req.user.roleName)) {
+    return res.status(403).json({ error: "No tienes permiso para crear préstamos" });
+  }
+
+  next();
+}
+
+export async function authorizeLoanDetail(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ error: "No autenticado" });
+  }
+
+  const loanId = Number(req.params.id);
+  if (Number.isNaN(loanId)) {
+    return res.status(400).json({ error: "ID de préstamo inválido" });
+  }
+
+  try {
+    const loan = await loansService.findLoanById(loanId);
+    if (req.user.roleName === "bibliotecario" || req.user.roleName === "admin" || loan.userId === req.user.userId) {
+      return next();
+    }
+    return res.status(403).json({ error: "No tienes permiso para ver este préstamo" });
+  } catch (error: any) {
+    return res.status(404).json({ error: error.message });
+  }
+}
+
+export async function authorizeLoanReturn(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ error: "No autenticado" });
+  }
+
+  const loanId = Number(req.params.id);
+  if (Number.isNaN(loanId)) {
+    return res.status(400).json({ error: "ID de préstamo inválido" });
+  }
+
+  try {
+    const loan = await loansService.findLoanById(loanId);
+    if (req.user.roleName === "bibliotecario") {
+      return next();
+    }
+
+    if (loan.userId !== req.user.userId) {
+      return res.status(403).json({ error: "Solo puedes devolver tus propios préstamos" });
+    }
+
+    return next();
+  } catch (error: any) {
+    return res.status(404).json({ error: error.message });
+  }
+}

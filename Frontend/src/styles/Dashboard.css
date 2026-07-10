@@ -1,0 +1,21 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.dashboard-main {
+  display: flex;
+  flex: 1;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  background: #fff;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
