@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Card, List, Row, Col, Badge, Button, Spin, message } from "antd";
+import { Card, List, Row, Col, Badge, Button, Spin, message, Typography } from "antd";
 import Layout from "../components/Layout";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLoans, returnLoan } from "../services/api";
