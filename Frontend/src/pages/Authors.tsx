@@ -7,11 +7,15 @@ export default function Authors() {
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
 
-  const { data, isLoading, error } = useQuery(["authors"], getAuthors);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["authors"],
+    queryFn: getAuthors,
+  });
 
-  const createAuthorMutation = useMutation(createAuthor, {
+  const createAuthorMutation = useMutation({
+    mutationFn: createAuthor,
     onSuccess: () => {
-      queryClient.invalidateQueries(["authors"]);
+      queryClient.invalidateQueries({ queryKey: ["authors"] });
       message.success("Autor creado correctamente");
       form.resetFields();
     },
@@ -23,7 +27,10 @@ export default function Authors() {
   const authors = data ?? [];
 
   const onFinish = (values: any) => {
-    createAuthorMutation.mutate({ name: values.name, biography: values.biography });
+    createAuthorMutation.mutate({
+      name: values.name,
+      biography: values.biography,
+    });
   };
 
   if (isLoading) {
@@ -43,30 +50,47 @@ export default function Authors() {
           <Col xs={24} lg={16}>
             <Card title="Autores">
               {error ? (
-                <p style={{ color: "red" }}>No se pudo cargar la lista de autores.</p>
+                <p style={{ color: "red" }}>
+                  No se pudo cargar la lista de autores.
+                </p>
               ) : (
                 <List
                   dataSource={authors}
                   renderItem={(author: any) => (
                     <List.Item>
-                      <List.Item.Meta title={author.name} description={author.biography ?? "Sin biografía"} />
+                      <List.Item.Meta
+                        title={author.name}
+                        description={author.biography ?? "Sin biografía"}
+                      />
                     </List.Item>
                   )}
                 />
               )}
             </Card>
           </Col>
+
           <Col xs={24} lg={8}>
             <Card title="Agregar autor">
               <Form form={form} layout="vertical" onFinish={onFinish}>
-                <Form.Item name="name" label="Nombre" rules={[{ required: true, message: "El nombre es requerido" }]}>
+                <Form.Item
+                  name="name"
+                  label="Nombre"
+                  rules={[{ required: true, message: "El nombre es requerido" }]}
+                >
                   <Input />
                 </Form.Item>
+
                 <Form.Item name="biography" label="Biografía">
                   <Input.TextArea rows={4} />
                 </Form.Item>
+
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" loading={createAuthorMutation.isLoading} block>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={createAuthorMutation.isPending}
+                    block
+                  >
                     Guardar autor
                   </Button>
                 </Form.Item>
