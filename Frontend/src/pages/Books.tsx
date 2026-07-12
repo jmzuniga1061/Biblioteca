@@ -2,26 +2,69 @@ import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Layout from "../components/Layout";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getBooks, getAuthors, getCategories, createBook, createLoan, getBookLoanStatus } from "../services/api";
-import { Card, Row, Col, Input, List, Typography, Badge, Button, Form, message, InputNumber, Select, Spin } from "antd";
+import {
+  getBooks,
+  getAuthors,
+  getCategories,
+  createBook,
+  createLoan,
+  getBookLoanStatus,
+} from "../services/api";
+import {
+  Card,
+  Row,
+  Col,
+  Input,
+  List,
+  Typography,
+  Badge,
+  Button,
+  Form,
+  message,
+  InputNumber,
+  Select,
+  Spin,
+} from "antd";
 
 const { Title, Paragraph } = Typography;
 
 export default function Books() {
   const { user, hasRole } = useAuth();
   const queryClient = useQueryClient();
-  const [filters, setFilters] = useState({ title: "", author: "", year: "", publisher: "", keywords: "" });
+
+  const [filters, setFilters] = useState({
+    title: "",
+    author: "",
+    year: "",
+    publisher: "",
+    keywords: "",
+  });
+
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [loanStatus, setLoanStatus] = useState<any>(null);
   const [form] = Form.useForm();
 
-  const booksQuery = useQuery(["books"], getBooks);
-  const authorsQuery = useQuery(["authors"], getAuthors);
-  const categoriesQuery = useQuery(["categories"], getCategories);
+  // ✅ QUERIES
+  const booksQuery = useQuery({
+    queryKey: ["books"],
+    queryFn: getBooks,
+  });
 
-  const createBookMutation = useMutation(createBook, {
+  const authorsQuery = useQuery({
+    queryKey: ["authors"],
+    queryFn: getAuthors,
+  });
+
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
+
+  // ✅ MUTATIONS
+  const createBookMutation = useMutation({
+    mutationFn: createBook,
     onSuccess: () => {
-      queryClient.invalidateQueries(["books"]);
+      queryClient.invalidateQueries({ queryKey: ["books"] });
       message.success("Libro agregado correctamente");
       form.resetFields();
     },
@@ -30,12 +73,17 @@ export default function Books() {
     },
   });
 
-  const createLoanMutation = useMutation((bookId: number) => createLoan(bookId), {
+  const createLoanMutation = useMutation({
+    mutationFn: (bookId: number) => createLoan(bookId),
     onSuccess: (data: any) => {
-      queryClient.invalidateQueries(["books"]);
-      queryClient.invalidateQueries(["loans"]);
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      queryClient.invalidateQueries({ queryKey: ["loans"] });
       setLoanStatus(data);
-      message.success(`Préstamo creado. Due date: ${new Date(data.dueDate).toLocaleDateString()}`);
+      message.success(
+        `Préstamo creado. Fecha de entrega: ${new Date(
+          data.dueDate
+        ).toLocaleDateString()}`
+      );
     },
     onError: (error: any) => {
       message.error(error?.message || "No se pudo crear el préstamo");
@@ -52,17 +100,57 @@ export default function Books() {
       author: filters.author,
       year: filters.year ? Number(filters.year) : undefined,
       publisher: filters.publisher,
-      keywords: filters.keywords ? filters.keywords.split(" ").filter(Boolean) : undefined,
+      keywords: filters.keywords
+        ? filters.keywords.split(" ").filter(Boolean)
+        : undefined,
     };
+
     return books.filter((book: any) => {
-      if (query.title && !book.title.toLowerCase().includes(query.title.toLowerCase())) return false;
-      if (query.author && !book.author.name.toLowerCase().includes(query.author.toLowerCase())) return false;
-      if (query.year && Number(book.createdAt ? new Date(book.createdAt).getFullYear() : 0) !== query.year) return false;
-      if (query.publisher && !(book.description || "").toLowerCase().includes(query.publisher.toLowerCase())) return false;
+      if (
+        query.title &&
+        !book.title.toLowerCase().includes(query.title.toLowerCase())
+      )
+        return false;
+
+      if (
+        query.author &&
+        !book.author?.name.toLowerCase().includes(query.author.toLowerCase())
+      )
+        return false;
+
+      if (
+        query.year &&
+        Number(
+          book.createdAt
+            ? new Date(book.createdAt).getFullYear()
+            : 0
+        ) !== query.year
+      )
+        return false;
+
+      if (
+        query.publisher &&
+        !(book.description || "")
+          .toLowerCase()
+          .includes(query.publisher.toLowerCase())
+      )
+        return false;
+
       if (query.keywords && query.keywords.length > 0) {
-        const bookKeywords = book.category?.name ? [book.category.name.toLowerCase()] : [];
-        if (!query.keywords.some((k: string) => bookKeywords.some((bk: string) => bk.includes(k.toLowerCase())))) return false;
+        const bookKeywords = book.category?.name
+          ? [book.category.name.toLowerCase()]
+          : [];
+
+        if (
+          !query.keywords.some((k: string) =>
+            bookKeywords.some((bk: string) =>
+              bk.includes(k.toLowerCase())
+            )
+          )
+        )
+          return false;
       }
+
       return true;
     });
   }, [books, filters]);
@@ -79,6 +167,7 @@ export default function Books() {
 
   const handleSelect = (book: any) => {
     setSelectedBook(book);
+
     if (book?.id) {
       getBookLoanStatus(book.id)
         .then(setLoanStatus)
@@ -93,8 +182,9 @@ export default function Books() {
     createLoanMutation.mutate(selectedBook.id);
   };
 
-  const onCreateBook = async (values: any) => {
+  const onCreateBook = (values: any) => {
     if (!user) return;
+
     createBookMutation.mutate({
       title: values.title,
       isbn: values.isbn,
@@ -106,7 +196,11 @@ export default function Books() {
     });
   };
 
-  if (booksQuery.isLoading || authorsQuery.isLoading || categoriesQuery.isLoading) {
+  if (
+    booksQuery.isLoading ||
+    authorsQuery.isLoading ||
+    categoriesQuery.isLoading
+  ) {
     return (
       <Layout>
         <div style={{ padding: 24, textAlign: "center" }}>
@@ -123,39 +217,47 @@ export default function Books() {
           <Row gutter={[16, 16]} align="middle">
             <Col xs={24} lg={16}>
               <Title level={4}>Catálogo de Libros</Title>
-              <Paragraph>Busca por título, autor, año, editorial o categoría.</Paragraph>
+              <Paragraph>
+                Busca por título, autor, año, editorial o categoría.
+              </Paragraph>
             </Col>
+
             <Col xs={24} lg={8}>
-              <Form layout="vertical" onFinish={handleSearch} initialValues={filters}>
+              <Form layout="vertical" onFinish={handleSearch}>
                 <Row gutter={8}>
-                  <Col span={24} sm={12} md={12} lg={12}>
+                  <Col span={24}>
                     <Form.Item name="title" label="Título">
-                      <Input placeholder="Buscar por título" allowClear />
+                      <Input allowClear />
                     </Form.Item>
                   </Col>
-                  <Col span={24} sm={12} md={12} lg={12}>
+
+                  <Col span={24}>
                     <Form.Item name="author" label="Autor">
-                      <Input placeholder="Buscar por autor" allowClear />
+                      <Input allowClear />
                     </Form.Item>
                   </Col>
-                  <Col span={24} sm={12} md={12} lg={8}>
+
+                  <Col span={24}>
                     <Form.Item name="year" label="Año">
-                      <InputNumber style={{ width: "100%" }} placeholder="Año" />
+                      <InputNumber style={{ width: "100%" }} />
                     </Form.Item>
                   </Col>
-                  <Col span={24} sm={12} md={12} lg={8}>
+
+                  <Col span={24}>
                     <Form.Item name="publisher" label="Editorial">
-                      <Input placeholder="Buscar por editorial" allowClear />
+                      <Input allowClear />
                     </Form.Item>
                   </Col>
-                  <Col span={24} sm={12} md={12} lg={8}>
+
+                  <Col span={24}>
                     <Form.Item name="keywords" label="Categoría">
-                      <Input placeholder="Buscar por categoría" allowClear />
+                      <Input allowClear />
                     </Form.Item>
                   </Col>
                 </Row>
+
                 <Form.Item>
-                  <Button type="primary" htmlType="submit">
+                  <Button type="primary" htmlType="submit" block>
                     Buscar
                   </Button>
                 </Form.Item>
@@ -166,17 +268,22 @@ export default function Books() {
 
         <Row gutter={[16, 16]}>
           <Col xs={24} lg={16}>
-            <Card title="Catálogo completo">
+            <Card title="Libros">
               <List
-                itemLayout="horizontal"
                 dataSource={filteredBooks}
                 renderItem={(book: any) => (
-                  <List.Item onClick={() => handleSelect(book)} style={{ cursor: "pointer" }}>
+                  <List.Item
+                    onClick={() => handleSelect(book)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <List.Item.Meta
                       title={book.title}
-                      description={`${book.author?.name ?? "Autor desconocido"} · ${book.category?.name ?? "Categoría desconocida"}`}
+                      description={`${book.author?.name ?? "Autor desconocido"} · ${book.category?.name ?? "Sin categoría"}`}
                     />
-                    <Badge status={book.available ? "success" : "error"} text={book.available ? "Disponible" : "No disponible"} />
+                    <Badge
+                      status={book.available ? "success" : "error"}
+                      text={book.available ? "Disponible" : "No disponible"}
+                    />
                   </List.Item>
                 )}
               />
@@ -184,55 +291,88 @@ export default function Books() {
           </Col>
 
           <Col xs={24} lg={8}>
-            <Card title="Detalle del libro">
+            <Card title="Detalle">
               {selectedBook ? (
-                <div>
+                <>
                   <Title level={5}>{selectedBook.title}</Title>
-                  <Paragraph><strong>Autor:</strong> {selectedBook.author?.name ?? "N/A"}</Paragraph>
-                  <Paragraph><strong>Categoría:</strong> {selectedBook.category?.name ?? "N/A"}</Paragraph>
-                  <Paragraph><strong>ISBN:</strong> {selectedBook.isbn ?? "N/A"}</Paragraph>
-                  <Paragraph><strong>Disponibilidad:</strong> {selectedBook.available ? "Disponible" : "Prestado"}</Paragraph>
+                  <Paragraph>
+                    <strong>Autor:</strong>{" "}
+                    {selectedBook.author?.name ?? "N/A"}
+                  </Paragraph>
+                  <Paragraph>
+                    <strong>Categoría:</strong>{" "}
+                    {selectedBook.category?.name ?? "N/A"}
+                  </Paragraph>
+
                   {selectedBook.available ? (
-                    <Button type="primary" block onClick={handleRent} loading={createLoanMutation.isLoading}>
-                      Alquilar libro
+                    <Button
+                      type="primary"
+                      block
+                      onClick={handleRent}
+                      loading={createLoanMutation.isPending}
+                    >
+                      Alquilar
                     </Button>
                   ) : (
-                    <Paragraph type="secondary">
-                      {loanStatus?.dueDate ? `Fecha de entrega: ${new Date(loanStatus.dueDate).toLocaleDateString()}` : "Libro actualmente prestado"}
+                    <Paragraph>
+                      {loanStatus?.dueDate
+                        ? `Entrega: ${new Date(
+                            loanStatus.dueDate
+                          ).toLocaleDateString()}`
+                        : "No disponible"}
                     </Paragraph>
                   )}
-                </div>
+                </>
               ) : (
-                <Paragraph>Selecciona un libro para ver el detalle.</Paragraph>
+                <Paragraph>Selecciona un libro</Paragraph>
               )}
             </Card>
 
             {hasRole("bibliotecario") && (
-              <Card title="Agregar nuevo libro">
+              <Card title="Nuevo libro">
                 <Form form={form} layout="vertical" onFinish={onCreateBook}>
-                  <Form.Item name="title" label="Título" rules={[{ required: true, message: "El título es requerido" }]}>
+                  <Form.Item name="title" label="Título" required>
                     <Input />
                   </Form.Item>
-                  <Form.Item name="isbn" label="ISBN" rules={[{ required: true, message: "El ISBN es requerido" }]}>
+
+                  <Form.Item name="isbn" label="ISBN" required>
                     <Input />
                   </Form.Item>
-                  <Form.Item name="authorId" label="Autor" rules={[{ required: true, message: "El autor es requerido" }]}>
-                    <Select options={authors.map((author: any) => ({ label: author.name, value: author.id }))} />
+
+                  <Form.Item name="authorId" label="Autor" required>
+                    <Select
+                      options={authors.map((a: any) => ({
+                        label: a.name,
+                        value: a.id,
+                      }))}
+                    />
                   </Form.Item>
-                  <Form.Item name="categoryId" label="Categoría" rules={[{ required: true, message: "La categoría es requerida" }]}>
-                    <Select options={categories.map((category: any) => ({ label: category.name, value: category.id }))} />
+
+                  <Form.Item name="categoryId" label="Categoría" required>
+                    <Select
+                      options={categories.map((c: any) => ({
+                        label: c.name,
+                        value: c.id,
+                      }))}
+                    />
                   </Form.Item>
-                  <Form.Item name="stock" label="Stock" initialValue={1} rules={[{ required: true, message: "El stock es requerido" }]}>
+
+                  <Form.Item name="stock" label="Stock" initialValue={1}>
                     <InputNumber style={{ width: "100%" }} min={1} />
                   </Form.Item>
+
                   <Form.Item name="description" label="Descripción">
-                    <Input.TextArea rows={3} />
+                    <Input.TextArea />
                   </Form.Item>
-                  <Form.Item>
-                    <Button type="primary" htmlType="submit" block loading={createBookMutation.isLoading}>
-                      Agregar libro
-                    </Button>
-                  </Form.Item>
+
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    block
+                    loading={createBookMutation.isPending}
+                  >
+                    Crear libro
+                  </Button>
                 </Form>
               </Card>
             )}
