@@ -1,0 +1,1 @@
+export declare const authorizeReportsAccess: (req: import("../auth/auth.middleware").AuthRequest, res: import("express").Response, next: import("express").NextFunction) => import("express").Response<any, Record<string, any>> | undefined;

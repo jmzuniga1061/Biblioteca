@@ -12,7 +12,7 @@ export default function PrivateRoute({ children, allowedRoles }: PrivateRoutePro
   const location = useLocation();
 
   if (!auth.isAuthenticated) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (allowedRoles && allowedRoles.length > 0) {

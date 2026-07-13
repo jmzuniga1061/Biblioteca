@@ -1,48 +1,72 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AppBar, Toolbar, IconButton, Typography, Avatar, Menu, MenuItem, Box } from "@mui/material";
+import { Layout, Avatar, Dropdown, Space, Button } from "antd";
+import { MenuOutlined, UserOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
+
+const { Header } = Layout;
 
 interface NavbarProps {
   toggleSidebar: () => void;
 }
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleOpen = (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget);
-  const handleClose = () => setAnchorEl(null);
-
   const handleLogout = () => {
-    handleClose();
     logout();
     navigate("/");
   };
 
-  return (
-    <AppBar position="static" color="inherit" elevation={1}>
-      <Toolbar>
-        <IconButton edge="start" color="inherit" onClick={toggleSidebar} aria-label="menu">
-          <span style={{ fontSize: 20 }}>☰</span>
-        </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Biblioteca Virtual
-        </Typography>
+  const menuItems = [
+    {
+      key: "profile",
+      label: <Link to="/profile">Perfil</Link>,
+      icon: <UserOutlined />,
+    },
+    {
+      key: "settings",
+      label: <Link to="/settings">Configuración</Link>,
+      icon: <SettingOutlined />,
+    },
+    {
+      key: "logout",
+      label: "Cerrar sesión",
+      icon: <LogoutOutlined />,
+      danger: true,
+      onClick: handleLogout,
+    },
+  ];
 
-        <Box>
-          <IconButton onClick={handleOpen} size="small">
-            <Avatar src={`https://ui-avatars.com/api/?name=${user?.name ?? "User"}&background=9ca3af&color=fff&size=40`} />
-          </IconButton>
-          <Menu anchorEl={anchorEl} open={open} onClose={handleClose} anchorOrigin={{ vertical: "bottom", horizontal: "right" }} transformOrigin={{ vertical: "top", horizontal: "right" }}>
-            <MenuItem component={Link} to="/profile" onClick={handleClose}>Perfil</MenuItem>
-            <MenuItem component={Link} to="/settings" onClick={handleClose}>Configuración</MenuItem>
-            <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
-          </Menu>
-        </Box>
-      </Toolbar>
-    </AppBar>
+  return (
+    <Header style={{ background: "#white", backgroundColor: "#ffffff", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0f0f0", height: "64px" }}>
+      <Space>
+        <Button 
+          type="text" 
+          icon={<MenuOutlined />} 
+          onClick={toggleSidebar} 
+          style={{ fontSize: "16px", width: 64, height: 64 }} 
+        />
+        <span style={{ fontSize: "18px", fontWeight: "bold", color: "#1f1f1f" }}>
+          Biblioteca Virtual
+        </span>
+      </Space>
+
+      {user ? (
+        <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
+          <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ color: "#555", fontWeight: 500 }}>{user.name}</span>
+            <Avatar 
+              size={40} 
+              src={`https://ui-avatars.com/api/?name=${user?.name ?? "User"}&background=1890ff&color=fff&size=40`} 
+            />
+          </div>
+        </Dropdown>
+      ) : (
+        <Button type="primary" onClick={() => navigate("/login")}>
+          Iniciar sesión
+        </Button>
+      )}
+    </Header>
   );
 }

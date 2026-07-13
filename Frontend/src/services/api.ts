@@ -1,5 +1,5 @@
 const API_BASE_URL =
-import.meta.env.VITE_API_BASE_URL || "biblioteca-production-c704.up.railway.app";
+import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // 🔐 TOKEN
 function getAuthToken() {
@@ -109,11 +109,11 @@ return handleResponse(response);
 // 📖 LOANS
 // ==================
 
-export async function createLoan(bookId: number) {
+export async function createLoan(bookId: number, documentType?: string) {
 const response = await fetch(`${API_BASE_URL}/loans`, {
 method: "POST",
 headers: authHeaders(),
-body: JSON.stringify({ bookId }),
+body: JSON.stringify({ bookId, documentType }),
 });
 return handleResponse(response);
 }
@@ -187,6 +187,23 @@ return handleResponse(response);
 export async function getUsers() {
 const response = await fetch(`${API_BASE_URL}/users`, {
 headers: authHeaders(),
+});
+return handleResponse(response);
+}
+
+export async function deleteUser(id: number) {
+const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+method: "DELETE",
+headers: authHeaders(),
+});
+return handleResponse(response);
+}
+
+export async function changeUserRole(id: number, roleName: string) {
+const response = await fetch(`${API_BASE_URL}/users/${id}/role`, {
+method: "PATCH",
+headers: authHeaders(),
+body: JSON.stringify({ roleName }),
 });
 return handleResponse(response);
 }

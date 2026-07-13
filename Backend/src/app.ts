@@ -1,12 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
-import authRouter from "./auth.controller";
-import usersRouter from "./users.controller";
-import booksRouter from "./books.controller";
-import loansRouter from "./loans.controller";
-import authorsRouter from "./authors.controller";
-import categoriesRouter from "./categories.controller";
-import reportsRouter from "./reports.controller";
+import authRouter from "./auth/auth.controller";
+import usersRouter from "./users/users.controller";
+import booksRouter from "./books/books.controller";
+import loansRouter from "./loans/loans.controller";
+import authorsRouter from "./authors/authors.controller";
+import categoriesRouter from "./categories/categories.controller";
+import reportsRouter from "./reports/reports.controller";
 
 dotenv.config();
 

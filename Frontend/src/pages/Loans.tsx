@@ -106,7 +106,7 @@ export default function Loans() {
                           loan.loanDate
                         ).toLocaleDateString()} · Due: ${new Date(
                           loan.dueDate
-                        ).toLocaleDateString()}`}
+                        ).toLocaleDateString()} · Documento: ${loan.documentType || "N/A"}`}
                       />
                       <Badge
                         status={

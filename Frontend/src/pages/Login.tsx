@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Card, message } from "antd";
 import "../styles/Login.css";
 import { useAuth } from "../context/AuthContext";
@@ -43,7 +43,7 @@ export default function Login() {
         </Form>
 
         <p className="register-text">
-          ¿No tienes cuenta? <a href="/register">Regístrate aquí</a>
+          ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
         </p>
       </Card>
     </div>

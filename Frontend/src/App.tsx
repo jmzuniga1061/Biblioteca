@@ -15,17 +15,10 @@ import PrivateRoute from "./components/PrivateRoute";
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      />
 
       <Route
         path="/books"
@@ -66,7 +59,7 @@ export default function App() {
       <Route
         path="/users"
         element={
-          <PrivateRoute allowedRoles={["admin"]}>
+          <PrivateRoute allowedRoles={["admin", "administrador", "subadministrador"]}>
             <Users />
           </PrivateRoute>
         }
@@ -75,7 +68,7 @@ export default function App() {
       <Route
         path="/reports"
         element={
-          <PrivateRoute allowedRoles={["bibliotecario", "admin"]}>
+          <PrivateRoute allowedRoles={["bibliotecario", "admin", "administrador", "subadministrador"]}>
             <Reports />
           </PrivateRoute>
         }

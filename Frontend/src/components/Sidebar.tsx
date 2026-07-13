@@ -12,16 +12,23 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const role = user?.role;
 
   const allItems = [
-    { key: "/dashboard", label: <Link to="/dashboard">Inicio</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin"] },
-    { key: "/books", label: <Link to="/books">Libros</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin"] },
-    { key: "/loans", label: <Link to="/loans">Préstamos</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin"] },
-    { key: "/authors", label: <Link to="/authors">Autores</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin"] },
-    { key: "/categories", label: <Link to="/categories">Categorías</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin"] },
-    { key: "/users", label: <Link to="/users">Usuarios</Link>, roles: ["admin"] },
-    { key: "/reports", label: <Link to="/reports">Reportes</Link>, roles: ["bibliotecario", "admin"] },
+    { key: "/dashboard", label: <Link to="/dashboard">Inicio</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin", "administrador", "subadministrador"] },
+    { key: "/books", label: <Link to="/books">Libros</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin", "administrador", "subadministrador"] },
+    { key: "/loans", label: <Link to="/loans">Préstamos</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin", "administrador", "subadministrador"] },
+    { key: "/authors", label: <Link to="/authors">Autores</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin", "administrador", "subadministrador"] },
+    { key: "/categories", label: <Link to="/categories">Categorías</Link>, roles: ["cliente", "estudiante", "bibliotecario", "profesor", "admin", "administrador", "subadministrador"] },
+    { key: "/users", label: <Link to="/users">Usuarios</Link>, roles: ["admin", "administrador", "subadministrador"] },
+    { key: "/reports", label: <Link to="/reports">Reportes</Link>, roles: ["bibliotecario", "admin", "administrador", "subadministrador"] },
   ];
 
-  const items = allItems.filter((item) => (role ? item.roles.includes(role) : false)).map((item) => ({ key: item.key, label: item.label }));
+  const items = allItems
+    .filter((item) => {
+      if (!role) {
+        return item.key === "/dashboard";
+      }
+      return item.roles.includes(role);
+    })
+    .map((item) => ({ key: item.key, label: item.label }));
 
   return (
     <aside style={{ width: isOpen ? 220 : 72, transition: "width 0.2s" }}>

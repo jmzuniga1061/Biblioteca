@@ -42,6 +42,7 @@ export default function Books() {
 
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [loanStatus, setLoanStatus] = useState<any>(null);
+  const [docType, setDocType] = useState("DNI/Cédula");
   const [form] = Form.useForm();
 
   // ✅ QUERIES
@@ -74,7 +75,7 @@ export default function Books() {
   });
 
   const createLoanMutation = useMutation({
-    mutationFn: (bookId: number) => createLoan(bookId),
+    mutationFn: (bookId: number) => createLoan(bookId, docType),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
       queryClient.invalidateQueries({ queryKey: ["loans"] });
@@ -130,7 +131,7 @@ export default function Books() {
 
       if (
         query.publisher &&
-        !(book.description || "")
+        !(book.editorial || "")
           .toLowerCase()
           .includes(query.publisher.toLowerCase())
       )
@@ -191,6 +192,7 @@ export default function Books() {
       authorId: Number(values.authorId),
       categoryId: Number(values.categoryId),
       description: values.description,
+      editorial: values.editorial,
       stock: Number(values.stock),
       available: true,
     });
@@ -303,16 +305,36 @@ export default function Books() {
                     <strong>Categoría:</strong>{" "}
                     {selectedBook.category?.name ?? "N/A"}
                   </Paragraph>
+                  <Paragraph>
+                    <strong>Editorial:</strong>{" "}
+                    {selectedBook.editorial ?? "N/A"}
+                  </Paragraph>
 
                   {selectedBook.available ? (
-                    <Button
-                      type="primary"
-                      block
-                      onClick={handleRent}
-                      loading={createLoanMutation.isPending}
-                    >
-                      Alquilar
-                    </Button>
+                    <>
+                      <div style={{ marginBottom: 8 }}>
+                        <span style={{ fontSize: "12px", color: "#8c8c8c" }}>Documento a entregar:</span>
+                      </div>
+                      <Select
+                        value={docType}
+                        onChange={setDocType}
+                        style={{ width: "100%", marginBottom: 16 }}
+                        options={[
+                          { label: "DNI/Cédula", value: "DNI/Cédula" },
+                          { label: "Carnet Estudiantil", value: "Carnet Estudiantil" },
+                          { label: "Carnet de Profesor", value: "Carnet de Profesor" },
+                          { label: "Pasaporte", value: "Pasaporte" },
+                        ]}
+                      />
+                      <Button
+                        type="primary"
+                        block
+                        onClick={handleRent}
+                        loading={createLoanMutation.isPending}
+                      >
+                        Alquilar
+                      </Button>
+                    </>
                   ) : (
                     <Paragraph>
                       {loanStatus?.dueDate
@@ -359,6 +381,10 @@ export default function Books() {
 
                   <Form.Item name="stock" label="Stock" initialValue={1}>
                     <InputNumber style={{ width: "100%" }} min={1} />
+                  </Form.Item>
+
+                   <Form.Item name="editorial" label="Editorial">
+                    <Input />
                   </Form.Item>
 
                   <Form.Item name="description" label="Descripción">
