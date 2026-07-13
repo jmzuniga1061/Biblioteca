@@ -6,96 +6,115 @@ import { getReports } from "../services/api";
 const { Title, Paragraph } = Typography;
 
 export default function Reports() {
-  const { data, isLoading, error } = useQuery(["reports"], getReports);
+const { data, isLoading, error } = useQuery({
+queryKey: ["reports"],
+queryFn: getReports,
+});
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <div style={{ padding: 24, textAlign: "center" }}>
-          <Spin size="large" />
-        </div>
-      </Layout>
-    );
-  }
+if (isLoading) {
+return ( <Layout>
+<div style={{ padding: 24, textAlign: "center" }}> <Spin size="large" /> </div> </Layout>
+);
+}
 
-  if (error) {
-    return (
-      <Layout>
-        <Card style={{ margin: 16 }}>
-          <Alert message="Error al cargar los reportes" type="error" showIcon />
+if (error) {
+return ( <Layout>
+<Card style={{ margin: 16 }}> <Alert
+         message="Error al cargar los reportes"
+         type="error"
+         showIcon
+       /> </Card> </Layout>
+);
+}
+
+const reports = data ?? {
+monthly: [],
+topBooks: [],
+activeUsers: [],
+overdue: [],
+};
+
+return ( <Layout>
+<div
+style={{
+display: "flex",
+flexDirection: "column",
+gap: 24,
+padding: 16,
+}}
+> <Card> <Title level={4}>Reportes</Title> <Paragraph>
+Visualiza las métricas principales de préstamos, usuarios y libros. </Paragraph> </Card>
+
+```
+    <Row gutter={[16, 16]}>
+      <Col xs={24} lg={12}>
+        <Card title="Préstamos por mes">
+          <List
+            dataSource={reports.monthly}
+            renderItem={(item: any) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={item.month}
+                  description={`Total: ${item.count}`}
+                />
+              </List.Item>
+            )}
+          />
         </Card>
-      </Layout>
-    );
-  }
+      </Col>
 
-  return (
-    <Layout>
-      <div style={{ display: "flex", flexDirection: "column", gap: 24, padding: 16 }}>
-        <Card>
-          <Title level={4}>Reportes</Title>
-          <Paragraph>Visualiza las métricas principales de préstamos, usuarios y libros.</Paragraph>
+      <Col xs={24} lg={12}>
+        <Card title="Libros más prestados">
+          <List
+            dataSource={reports.topBooks}
+            renderItem={(item: any) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={item.title}
+                  description={`Préstamos: ${item.loanCount}`}
+                />
+              </List.Item>
+            )}
+          />
         </Card>
+      </Col>
+    </Row>
 
-        <Row gutter={[16, 16]}>
-          <Col xs={24} lg={12}>
-            <Card title="Préstamos por mes">
-              <List
-                dataSource={data?.monthly ?? []}
-                renderItem={(item: any) => (
-                  <List.Item>
-                    <List.Item.Meta title={item.month} description={`Total: ${item.count}`} />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Card title="Libros más prestados">
-              <List
-                dataSource={data?.topBooks ?? []}
-                renderItem={(item: any) => (
-                  <List.Item>
-                    <List.Item.Meta title={item.title} description={`Préstamos: ${item.loanCount}`} />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
-        </Row>
+    <Row gutter={[16, 16]}>
+      <Col xs={24} lg={12}>
+        <Card title="Usuarios más activos">
+          <List
+            dataSource={reports.activeUsers}
+            renderItem={(item: any) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={item.name}
+                  description={`${item.email} · ${item.roleName} · Préstamos: ${item.loanCount}`}
+                />
+              </List.Item>
+            )}
+          />
+        </Card>
+      </Col>
 
-        <Row gutter={[16, 16]}>
-          <Col xs={24} lg={12}>
-            <Card title="Usuarios más activos">
-              <List
-                dataSource={data?.activeUsers ?? []}
-                renderItem={(item: any) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={item.name}
-                      description={`${item.email} · ${item.roleName} · Préstamos: ${item.loanCount}`}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Card title="Préstamos vencidos">
-              <List
-                dataSource={data?.overdue ?? []}
-                renderItem={(item: any) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={item.book.title}
-                      description={`Usuario: ${item.user.name} · Días de retraso: ${item.daysOverdue} · Multa: $${item.fine}`}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
-        </Row>
-      </div>
-    </Layout>
-  );
+      <Col xs={24} lg={12}>
+        <Card title="Préstamos vencidos">
+          <List
+            dataSource={reports.overdue}
+            renderItem={(item: any) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={item.book?.title}
+                  description={`Usuario: ${item.user?.name} · Días de retraso: ${item.daysOverdue} · Multa: $${item.fine}`}
+                />
+              </List.Item>
+            )}
+          />
+        </Card>
+      </Col>
+    </Row>
+  </div>
+</Layout>
+
+);
 }
