@@ -1,18 +1,43 @@
 import { useMemo } from "react";
-import { Card, List, Row, Col, Badge, Button, Spin, message } from "antd";
+import {
+  Card,
+  List,
+  Row,
+  Col,
+  Badge,
+  Button,
+  Spin,
+  message,
+  Typography,
+} from "antd";
 import Layout from "../components/Layout";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { getLoans, returnLoan } from "../services/api";
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 export default function Loans() {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useQuery(["loans"], getLoans);
 
-  const returnLoanMutation = useMutation((loanId: number) => returnLoan(loanId), {
+  // ✅ React Query v5
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["loans"],
+    queryFn: getLoans,
+  });
+
+  // ✅ React Query v5
+  const returnLoanMutation = useMutation({
+    mutationFn: (loanId: number) => returnLoan(loanId),
     onSuccess: () => {
-      queryClient.invalidateQueries(["loans"]);
+      queryClient.invalidateQueries({ queryKey: ["loans"] });
       message.success("Préstamo devuelto correctamente");
     },
     onError: (err: any) => {
@@ -20,9 +45,12 @@ export default function Loans() {
     },
   });
 
-  const loans = data ?? [];
+  const loans = data;
 
-  const overdueLoans = useMemo(() => loans.filter((loan: any) => loan.overdue), [loans]);
+  const overdueLoans = useMemo(
+    () => loans.filter((loan: any) => loan.overdue),
+    [loans]
+  );
 
   if (isLoading) {
     return (
@@ -41,7 +69,9 @@ export default function Loans() {
           <Col xs={24} lg={16}>
             <Card title="Préstamos activos">
               {error ? (
-                <Paragraph type="danger">No se pudo cargar la lista de préstamos.</Paragraph>
+                <Paragraph type="danger">
+                  No se pudo cargar la lista de préstamos.
+                </Paragraph>
               ) : (
                 <List
                   dataSource={loans}
@@ -54,8 +84,10 @@ export default function Loans() {
                               <Button
                                 key="return"
                                 type="primary"
-                                loading={returnLoanMutation.isLoading}
-                                onClick={() => returnLoanMutation.mutate(loan.id)}
+                                loading={returnLoanMutation.isPending}
+                                onClick={() =>
+                                  returnLoanMutation.mutate(loan.id)
+                                }
                               >
                                 Devolver
                               </Button>,
@@ -63,10 +95,35 @@ export default function Loans() {
                       }
                     >
                       <List.Item.Meta
-                        title={`${loan.book.title} — ${loan.user?.name ?? loan.user?.email}`}
-                        description={`Prestado: ${new Date(loan.loanDate).toLocaleDateString()} · Due: ${new Date(loan.dueDate).toLocaleDateString()}`}
+                        title={`${
+                          loan.book?.title ?? "Sin título"
+                        } — ${
+                          loan.user?.name ??
+                          loan.user?.email ??
+                          "Usuario desconocido"
+                        }`}
+                        description={`Prestado: ${new Date(
+                          loan.loanDate
+                        ).toLocaleDateString()} · Due: ${new Date(
+                          loan.dueDate
+                        ).toLocaleDateString()}`}
                       />
-                      <Badge status={loan.returnDate ? "success" : loan.overdue ? "error" : "warning"} text={loan.returnDate ? "Devuelto" : loan.overdue ? "Vencido" : "Activo"} />
+                      <Badge
+                        status={
+                          loan.returnDate
+                            ? "success"
+                            : loan.overdue
+                            ? "error"
+                            : "warning"
+                        }
+                        text={
+                          loan.returnDate
+                            ? "Devuelto"
+                            : loan.overdue
+                            ? "Vencido"
+                            : "Activo"
+                        }
+                      />
                     </List.Item>
                   )}
                 />
@@ -80,7 +137,8 @@ export default function Loans() {
                 <strong>Total de préstamos:</strong> {loans.length}
               </Paragraph>
               <Paragraph>
-                <strong>Préstamos vencidos:</strong> {overdueLoans.length}
+                <strong>Préstamos vencidos:</strong>{" "}
+                {overdueLoans.length}
               </Paragraph>
             </Card>
           </Col>
