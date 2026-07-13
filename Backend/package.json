@@ -6,9 +6,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "prisma generate && nest build",
-    "start": "node dist/src/main.js",
-    "start:dev": "nest start --watch",
-    "start:prod": "node dist/src/main.js",
+    "start": "node dist/src/server.js",
+    "start:dev": "ts-node src/server.ts",
+    "start:prod": "node dist/src/server.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --config ./jest.config.js"
   },
