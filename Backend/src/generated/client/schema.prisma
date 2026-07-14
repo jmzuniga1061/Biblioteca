@@ -78,6 +78,7 @@ model Book {
   stock       Int      @default(1)
   available   Boolean  @default(true)
   imageUrl    String?
+  year        String?
   createdAt   DateTime @default(now())
 
   authorId   Int

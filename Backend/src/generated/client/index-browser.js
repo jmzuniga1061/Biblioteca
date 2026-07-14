@@ -169,6 +169,8 @@ exports.Prisma.BookScalarFieldEnum = {
   stock: 'stock',
   available: 'available',
   imageUrl: 'imageUrl',
+  year: 'year',
+  price: 'price',
   createdAt: 'createdAt',
   authorId: 'authorId',
   categoryId: 'categoryId'
@@ -181,7 +183,8 @@ exports.Prisma.LoanScalarFieldEnum = {
   loanDate: 'loanDate',
   returnDate: 'returnDate',
   status: 'status',
-  documentType: 'documentType'
+  documentType: 'documentType',
+  price: 'price'
 };
 
 exports.Prisma.SortOrder = {

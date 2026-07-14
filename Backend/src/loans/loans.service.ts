@@ -50,8 +50,21 @@ export class LoansService {
 
   async findLoansForUser(userId: number, roleName: string) {
     const roleLower = roleName.toLowerCase();
+    let loans;
     if (roleLower === "bibliotecario" || roleLower === "admin" || roleLower === "administrador" || roleLower === "subadministrador") {
-      return prisma.loan.findMany({
+      loans = await prisma.loan.findMany({
+        include: {
+          book: true,
+          user: {
+            include: {
+              role: true,
+            },
+          },
+        },
+      });
+    } else {
+      loans = await prisma.loan.findMany({
+        where: { userId },
         include: {
           book: true,
           user: {
@@ -63,16 +76,16 @@ export class LoansService {
       });
     }
 
-    return prisma.loan.findMany({
-      where: { userId },
-      include: {
-        book: true,
-        user: {
-          include: {
-            role: true,
-          },
-        },
-      },
+    return loans.map(loan => {
+      const loanDate = new Date(loan.loanDate);
+      const dueDate = new Date(loanDate);
+      dueDate.setDate(dueDate.getDate() + maxLoanDays(loan.user.role.name));
+      const overdue = !loan.returnDate && new Date() > dueDate;
+      return {
+        ...loan,
+        dueDate,
+        overdue,
+      };
     });
   }
 
@@ -96,8 +109,18 @@ export class LoansService {
     dueDate.setDate(dueDate.getDate() + maxLoanDays(roleName));
 
     const roleLower = roleName.toLowerCase();
-    const defaultDoc = roleLower === "estudiante" ? "Carnet Estudiantil" : roleLower === "profesor" ? "Carnet de Profesor" : "DNI/Cédula";
-    const docType = documentType || defaultDoc;
+    if (!documentType || documentType.trim() === "") {
+      throw new Error("Debe ingresar una identificación para continuar con el préstamo");
+    }
+    const docType = documentType;
+
+    const basePrice = book.price || 0;
+    let finalPrice = basePrice;
+    if (roleLower === "profesor") {
+      finalPrice = 0;
+    } else if (roleLower === "estudiante") {
+      finalPrice = parseFloat((basePrice * 0.5).toFixed(2));
+    }
 
     const loan = await prisma.loan.create({
       data: {
@@ -107,6 +130,7 @@ export class LoansService {
         returnDate: null,
         status: "Pendiente",
         documentType: docType,
+        price: finalPrice,
       },
       include: {
         book: true,
@@ -125,7 +149,8 @@ export class LoansService {
       dueDate,
       feePolicy: {
         maxDays: maxLoanDays(roleName),
-        discount: roleName === "profesor" ? "100%" : roleName === "estudiante" ? "50%" : "0%",
+        discount: roleLower === "profesor" ? "100%" : roleLower === "estudiante" ? "50%" : "0%",
+        finalPrice,
       },
     };
   }

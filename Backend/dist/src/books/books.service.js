@@ -42,6 +42,7 @@ class BooksService {
                 stock: data.stock ?? 1,
                 available: data.available ?? true,
                 imageUrl: data.imageUrl,
+                year: data.year,
                 authorId: data.authorId,
                 categoryId: data.categoryId,
             },
@@ -75,6 +76,7 @@ class BooksService {
                 stock: data.stock,
                 available: data.available,
                 imageUrl: data.imageUrl,
+                year: data.year,
                 authorId: data.authorId,
                 categoryId: data.categoryId,
             },
@@ -91,7 +93,6 @@ class BooksService {
     }
     async searchBooks(query) {
         const normalized = query?.trim() ?? "";
-        const year = normalized ? Number(normalized) : NaN;
         const where = normalized
             ? {
                 OR: [
@@ -99,18 +100,9 @@ class BooksService {
                     { description: { contains: normalized, mode: "insensitive" } },
                     { isbn: { contains: normalized, mode: "insensitive" } },
                     { editorial: { contains: normalized, mode: "insensitive" } },
+                    { year: { contains: normalized, mode: "insensitive" } },
                     { author: { name: { contains: normalized, mode: "insensitive" } } },
                     { category: { name: { contains: normalized, mode: "insensitive" } } },
-                    ...(Number.isFinite(year)
-                        ? [
-                            {
-                                createdAt: {
-                                    gte: new Date(year, 0, 1),
-                                    lt: new Date(year + 1, 0, 1),
-                                },
-                            },
-                        ]
-                        : []),
                 ],
             }
             : {};

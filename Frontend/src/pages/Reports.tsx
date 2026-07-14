@@ -45,7 +45,6 @@ padding: 16,
 > <Card> <Title level={4}>Reportes</Title> <Paragraph>
 Visualiza las métricas principales de préstamos, usuarios y libros. </Paragraph> </Card>
 
-```
     <Row gutter={[16, 16]}>
       <Col xs={24} lg={12}>
         <Card title="Préstamos por mes">

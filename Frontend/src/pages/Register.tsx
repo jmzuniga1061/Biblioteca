@@ -35,7 +35,18 @@ export default function Register() {
             <Input placeholder="Tu nombre" />
           </Form.Item>
 
-          <Form.Item name="email" label="Correo electrónico" rules={[{ required: true, type: "email" }]}> 
+          <Form.Item
+            name="email"
+            label="Correo electrónico"
+            rules={[
+              { required: true, message: "El correo electrónico es requerido" },
+              {
+                type: "email",
+                message: "Ingresa un correo electrónico válido",
+                transform: (value) => (typeof value === "string" ? value.trim() : value),
+              },
+            ]}
+          >
             <Input placeholder="usuario@example.com" />
           </Form.Item>
 

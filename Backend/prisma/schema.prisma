@@ -78,6 +78,8 @@ model Book {
   stock       Int      @default(1)
   available   Boolean  @default(true)
   imageUrl    String?
+  year        String?
+  price       Float    @default(0)
   createdAt   DateTime @default(now())
 
   authorId    Int
@@ -97,6 +99,7 @@ model Loan {
   returnDate   DateTime?
   status       String    @default("Pendiente")
   documentType String    @default("Identificación")
+  price        Float?
 
   user         User     @relation(fields: [userId], references: [id])
   book         Book     @relation(fields: [bookId], references: [id])

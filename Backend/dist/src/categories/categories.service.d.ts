@@ -3,13 +3,15 @@ export declare class CategoriesService {
         books: {
             id: number;
             description: string | null;
-            title: string;
+            createdAt: Date;
             isbn: string;
+            title: string;
             editorial: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
+            year: string | null;
+            price: number;
             authorId: number;
             categoryId: number;
         }[];
@@ -22,13 +24,15 @@ export declare class CategoriesService {
         books: {
             id: number;
             description: string | null;
-            title: string;
+            createdAt: Date;
             isbn: string;
+            title: string;
             editorial: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
+            year: string | null;
+            price: number;
             authorId: number;
             categoryId: number;
         }[];
@@ -41,13 +45,15 @@ export declare class CategoriesService {
         books: {
             id: number;
             description: string | null;
-            title: string;
+            createdAt: Date;
             isbn: string;
+            title: string;
             editorial: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
+            year: string | null;
+            price: number;
             authorId: number;
             categoryId: number;
         }[];
@@ -63,13 +69,15 @@ export declare class CategoriesService {
         books: {
             id: number;
             description: string | null;
-            title: string;
+            createdAt: Date;
             isbn: string;
+            title: string;
             editorial: string | null;
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
+            year: string | null;
+            price: number;
             authorId: number;
             categoryId: number;
         }[];

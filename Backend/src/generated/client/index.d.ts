@@ -8268,6 +8268,7 @@ export namespace Prisma {
   export type BookAvgAggregateOutputType = {
     id: number | null
     stock: number | null
+    price: number | null
     authorId: number | null
     categoryId: number | null
   }
@@ -8275,6 +8276,7 @@ export namespace Prisma {
   export type BookSumAggregateOutputType = {
     id: number | null
     stock: number | null
+    price: number | null
     authorId: number | null
     categoryId: number | null
   }
@@ -8288,6 +8290,8 @@ export namespace Prisma {
     stock: number | null
     available: boolean | null
     imageUrl: string | null
+    year: string | null
+    price: number | null
     createdAt: Date | null
     authorId: number | null
     categoryId: number | null
@@ -8302,6 +8306,8 @@ export namespace Prisma {
     stock: number | null
     available: boolean | null
     imageUrl: string | null
+    year: string | null
+    price: number | null
     createdAt: Date | null
     authorId: number | null
     categoryId: number | null
@@ -8316,6 +8322,8 @@ export namespace Prisma {
     stock: number
     available: number
     imageUrl: number
+    year: number
+    price: number
     createdAt: number
     authorId: number
     categoryId: number
@@ -8326,6 +8334,7 @@ export namespace Prisma {
   export type BookAvgAggregateInputType = {
     id?: true
     stock?: true
+    price?: true
     authorId?: true
     categoryId?: true
   }
@@ -8333,6 +8342,7 @@ export namespace Prisma {
   export type BookSumAggregateInputType = {
     id?: true
     stock?: true
+    price?: true
     authorId?: true
     categoryId?: true
   }
@@ -8346,6 +8356,8 @@ export namespace Prisma {
     stock?: true
     available?: true
     imageUrl?: true
+    year?: true
+    price?: true
     createdAt?: true
     authorId?: true
     categoryId?: true
@@ -8360,6 +8372,8 @@ export namespace Prisma {
     stock?: true
     available?: true
     imageUrl?: true
+    year?: true
+    price?: true
     createdAt?: true
     authorId?: true
     categoryId?: true
@@ -8374,6 +8388,8 @@ export namespace Prisma {
     stock?: true
     available?: true
     imageUrl?: true
+    year?: true
+    price?: true
     createdAt?: true
     authorId?: true
     categoryId?: true
@@ -8475,6 +8491,8 @@ export namespace Prisma {
     stock: number
     available: boolean
     imageUrl: string | null
+    year: string | null
+    price: number
     createdAt: Date
     authorId: number
     categoryId: number
@@ -8508,6 +8526,8 @@ export namespace Prisma {
     stock?: boolean
     available?: boolean
     imageUrl?: boolean
+    year?: boolean
+    price?: boolean
     createdAt?: boolean
     authorId?: boolean
     categoryId?: boolean
@@ -8526,6 +8546,8 @@ export namespace Prisma {
     stock?: boolean
     available?: boolean
     imageUrl?: boolean
+    year?: boolean
+    price?: boolean
     createdAt?: boolean
     authorId?: boolean
     categoryId?: boolean
@@ -8542,6 +8564,8 @@ export namespace Prisma {
     stock?: boolean
     available?: boolean
     imageUrl?: boolean
+    year?: boolean
+    price?: boolean
     createdAt?: boolean
     authorId?: boolean
     categoryId?: boolean
@@ -8558,12 +8582,14 @@ export namespace Prisma {
     stock?: boolean
     available?: boolean
     imageUrl?: boolean
+    year?: boolean
+    price?: boolean
     createdAt?: boolean
     authorId?: boolean
     categoryId?: boolean
   }
 
-  export type BookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "isbn" | "description" | "editorial" | "stock" | "available" | "imageUrl" | "createdAt" | "authorId" | "categoryId", ExtArgs["result"]["book"]>
+  export type BookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "isbn" | "description" | "editorial" | "stock" | "available" | "imageUrl" | "year" | "price" | "createdAt" | "authorId" | "categoryId", ExtArgs["result"]["book"]>
   export type BookInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | AuthorDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
@@ -8595,6 +8621,8 @@ export namespace Prisma {
       stock: number
       available: boolean
       imageUrl: string | null
+      year: string | null
+      price: number
       createdAt: Date
       authorId: number
       categoryId: number
@@ -9032,6 +9060,8 @@ export namespace Prisma {
     readonly stock: FieldRef<"Book", 'Int'>
     readonly available: FieldRef<"Book", 'Boolean'>
     readonly imageUrl: FieldRef<"Book", 'String'>
+    readonly year: FieldRef<"Book", 'String'>
+    readonly price: FieldRef<"Book", 'Float'>
     readonly createdAt: FieldRef<"Book", 'DateTime'>
     readonly authorId: FieldRef<"Book", 'Int'>
     readonly categoryId: FieldRef<"Book", 'Int'>
@@ -9489,12 +9519,14 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     bookId: number | null
+    price: number | null
   }
 
   export type LoanSumAggregateOutputType = {
     id: number | null
     userId: number | null
     bookId: number | null
+    price: number | null
   }
 
   export type LoanMinAggregateOutputType = {
@@ -9505,6 +9537,7 @@ export namespace Prisma {
     returnDate: Date | null
     status: string | null
     documentType: string | null
+    price: number | null
   }
 
   export type LoanMaxAggregateOutputType = {
@@ -9515,6 +9548,7 @@ export namespace Prisma {
     returnDate: Date | null
     status: string | null
     documentType: string | null
+    price: number | null
   }
 
   export type LoanCountAggregateOutputType = {
@@ -9525,6 +9559,7 @@ export namespace Prisma {
     returnDate: number
     status: number
     documentType: number
+    price: number
     _all: number
   }
 
@@ -9533,12 +9568,14 @@ export namespace Prisma {
     id?: true
     userId?: true
     bookId?: true
+    price?: true
   }
 
   export type LoanSumAggregateInputType = {
     id?: true
     userId?: true
     bookId?: true
+    price?: true
   }
 
   export type LoanMinAggregateInputType = {
@@ -9549,6 +9586,7 @@ export namespace Prisma {
     returnDate?: true
     status?: true
     documentType?: true
+    price?: true
   }
 
   export type LoanMaxAggregateInputType = {
@@ -9559,6 +9597,7 @@ export namespace Prisma {
     returnDate?: true
     status?: true
     documentType?: true
+    price?: true
   }
 
   export type LoanCountAggregateInputType = {
@@ -9569,6 +9608,7 @@ export namespace Prisma {
     returnDate?: true
     status?: true
     documentType?: true
+    price?: true
     _all?: true
   }
 
@@ -9666,6 +9706,7 @@ export namespace Prisma {
     returnDate: Date | null
     status: string
     documentType: string
+    price: number | null
     _count: LoanCountAggregateOutputType | null
     _avg: LoanAvgAggregateOutputType | null
     _sum: LoanSumAggregateOutputType | null
@@ -9695,6 +9736,7 @@ export namespace Prisma {
     returnDate?: boolean
     status?: boolean
     documentType?: boolean
+    price?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     book?: boolean | BookDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["loan"]>
@@ -9707,6 +9749,7 @@ export namespace Prisma {
     returnDate?: boolean
     status?: boolean
     documentType?: boolean
+    price?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     book?: boolean | BookDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["loan"]>
@@ -9719,6 +9762,7 @@ export namespace Prisma {
     returnDate?: boolean
     status?: boolean
     documentType?: boolean
+    price?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     book?: boolean | BookDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["loan"]>
@@ -9731,9 +9775,10 @@ export namespace Prisma {
     returnDate?: boolean
     status?: boolean
     documentType?: boolean
+    price?: boolean
   }
 
-  export type LoanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bookId" | "loanDate" | "returnDate" | "status" | "documentType", ExtArgs["result"]["loan"]>
+  export type LoanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bookId" | "loanDate" | "returnDate" | "status" | "documentType" | "price", ExtArgs["result"]["loan"]>
   export type LoanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     book?: boolean | BookDefaultArgs<ExtArgs>
@@ -9761,6 +9806,7 @@ export namespace Prisma {
       returnDate: Date | null
       status: string
       documentType: string
+      price: number | null
     }, ExtArgs["result"]["loan"]>
     composites: {}
   }
@@ -10193,6 +10239,7 @@ export namespace Prisma {
     readonly returnDate: FieldRef<"Loan", 'DateTime'>
     readonly status: FieldRef<"Loan", 'String'>
     readonly documentType: FieldRef<"Loan", 'String'>
+    readonly price: FieldRef<"Loan", 'Float'>
   }
     
 
@@ -10687,6 +10734,8 @@ export namespace Prisma {
     stock: 'stock',
     available: 'available',
     imageUrl: 'imageUrl',
+    year: 'year',
+    price: 'price',
     createdAt: 'createdAt',
     authorId: 'authorId',
     categoryId: 'categoryId'
@@ -10702,7 +10751,8 @@ export namespace Prisma {
     loanDate: 'loanDate',
     returnDate: 'returnDate',
     status: 'status',
-    documentType: 'documentType'
+    documentType: 'documentType',
+    price: 'price'
   };
 
   export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
@@ -11122,6 +11172,8 @@ export namespace Prisma {
     stock?: IntFilter<"Book"> | number
     available?: BoolFilter<"Book"> | boolean
     imageUrl?: StringNullableFilter<"Book"> | string | null
+    year?: StringNullableFilter<"Book"> | string | null
+    price?: FloatFilter<"Book"> | number
     createdAt?: DateTimeFilter<"Book"> | Date | string
     authorId?: IntFilter<"Book"> | number
     categoryId?: IntFilter<"Book"> | number
@@ -11139,6 +11191,8 @@ export namespace Prisma {
     stock?: SortOrder
     available?: SortOrder
     imageUrl?: SortOrderInput | SortOrder
+    year?: SortOrderInput | SortOrder
+    price?: SortOrder
     createdAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
@@ -11159,6 +11213,8 @@ export namespace Prisma {
     stock?: IntFilter<"Book"> | number
     available?: BoolFilter<"Book"> | boolean
     imageUrl?: StringNullableFilter<"Book"> | string | null
+    year?: StringNullableFilter<"Book"> | string | null
+    price?: FloatFilter<"Book"> | number
     createdAt?: DateTimeFilter<"Book"> | Date | string
     authorId?: IntFilter<"Book"> | number
     categoryId?: IntFilter<"Book"> | number
@@ -11176,6 +11232,8 @@ export namespace Prisma {
     stock?: SortOrder
     available?: SortOrder
     imageUrl?: SortOrderInput | SortOrder
+    year?: SortOrderInput | SortOrder
+    price?: SortOrder
     createdAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
@@ -11198,6 +11256,8 @@ export namespace Prisma {
     stock?: IntWithAggregatesFilter<"Book"> | number
     available?: BoolWithAggregatesFilter<"Book"> | boolean
     imageUrl?: StringNullableWithAggregatesFilter<"Book"> | string | null
+    year?: StringNullableWithAggregatesFilter<"Book"> | string | null
+    price?: FloatWithAggregatesFilter<"Book"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Book"> | Date | string
     authorId?: IntWithAggregatesFilter<"Book"> | number
     categoryId?: IntWithAggregatesFilter<"Book"> | number
@@ -11214,6 +11274,7 @@ export namespace Prisma {
     returnDate?: DateTimeNullableFilter<"Loan"> | Date | string | null
     status?: StringFilter<"Loan"> | string
     documentType?: StringFilter<"Loan"> | string
+    price?: FloatNullableFilter<"Loan"> | number | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     book?: XOR<BookScalarRelationFilter, BookWhereInput>
   }
@@ -11226,6 +11287,7 @@ export namespace Prisma {
     returnDate?: SortOrderInput | SortOrder
     status?: SortOrder
     documentType?: SortOrder
+    price?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     book?: BookOrderByWithRelationInput
   }
@@ -11241,6 +11303,7 @@ export namespace Prisma {
     returnDate?: DateTimeNullableFilter<"Loan"> | Date | string | null
     status?: StringFilter<"Loan"> | string
     documentType?: StringFilter<"Loan"> | string
+    price?: FloatNullableFilter<"Loan"> | number | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     book?: XOR<BookScalarRelationFilter, BookWhereInput>
   }, "id">
@@ -11253,6 +11316,7 @@ export namespace Prisma {
     returnDate?: SortOrderInput | SortOrder
     status?: SortOrder
     documentType?: SortOrder
+    price?: SortOrderInput | SortOrder
     _count?: LoanCountOrderByAggregateInput
     _avg?: LoanAvgOrderByAggregateInput
     _max?: LoanMaxOrderByAggregateInput
@@ -11271,6 +11335,7 @@ export namespace Prisma {
     returnDate?: DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
     status?: StringWithAggregatesFilter<"Loan"> | string
     documentType?: StringWithAggregatesFilter<"Loan"> | string
+    price?: FloatNullableWithAggregatesFilter<"Loan"> | number | null
   }
 
   export type UserCreateInput = {
@@ -11558,6 +11623,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     author: AuthorCreateNestedOneWithoutBooksInput
     category: CategoryCreateNestedOneWithoutBooksInput
@@ -11573,6 +11640,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     authorId: number
     categoryId: number
@@ -11587,6 +11656,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: AuthorUpdateOneRequiredWithoutBooksNestedInput
     category?: CategoryUpdateOneRequiredWithoutBooksNestedInput
@@ -11602,6 +11673,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: IntFieldUpdateOperationsInput | number
     categoryId?: IntFieldUpdateOperationsInput | number
@@ -11617,6 +11690,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     authorId: number
     categoryId: number
@@ -11630,6 +11705,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11642,6 +11719,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: IntFieldUpdateOperationsInput | number
     categoryId?: IntFieldUpdateOperationsInput | number
@@ -11652,6 +11731,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
     user: UserCreateNestedOneWithoutLoansInput
     book: BookCreateNestedOneWithoutLoansInput
   }
@@ -11664,6 +11744,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
   }
 
   export type LoanUpdateInput = {
@@ -11671,6 +11752,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     user?: UserUpdateOneRequiredWithoutLoansNestedInput
     book?: BookUpdateOneRequiredWithoutLoansNestedInput
   }
@@ -11683,6 +11765,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LoanCreateManyInput = {
@@ -11693,6 +11776,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
   }
 
   export type LoanUpdateManyMutationInput = {
@@ -11700,6 +11784,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LoanUncheckedUpdateManyInput = {
@@ -11710,6 +11795,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -12066,6 +12152,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type AuthorScalarRelationFilter = {
     is?: AuthorWhereInput
     isNot?: AuthorWhereInput
@@ -12085,6 +12182,8 @@ export namespace Prisma {
     stock?: SortOrder
     available?: SortOrder
     imageUrl?: SortOrder
+    year?: SortOrder
+    price?: SortOrder
     createdAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
@@ -12093,6 +12192,7 @@ export namespace Prisma {
   export type BookAvgOrderByAggregateInput = {
     id?: SortOrder
     stock?: SortOrder
+    price?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
   }
@@ -12106,6 +12206,8 @@ export namespace Prisma {
     stock?: SortOrder
     available?: SortOrder
     imageUrl?: SortOrder
+    year?: SortOrder
+    price?: SortOrder
     createdAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
@@ -12120,6 +12222,8 @@ export namespace Prisma {
     stock?: SortOrder
     available?: SortOrder
     imageUrl?: SortOrder
+    year?: SortOrder
+    price?: SortOrder
     createdAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
@@ -12128,6 +12232,7 @@ export namespace Prisma {
   export type BookSumOrderByAggregateInput = {
     id?: SortOrder
     stock?: SortOrder
+    price?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
   }
@@ -12140,6 +12245,22 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -12149,6 +12270,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type UserScalarRelationFilter = {
@@ -12169,12 +12301,14 @@ export namespace Prisma {
     returnDate?: SortOrder
     status?: SortOrder
     documentType?: SortOrder
+    price?: SortOrder
   }
 
   export type LoanAvgOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     bookId?: SortOrder
+    price?: SortOrder
   }
 
   export type LoanMaxOrderByAggregateInput = {
@@ -12185,6 +12319,7 @@ export namespace Prisma {
     returnDate?: SortOrder
     status?: SortOrder
     documentType?: SortOrder
+    price?: SortOrder
   }
 
   export type LoanMinOrderByAggregateInput = {
@@ -12195,12 +12330,14 @@ export namespace Prisma {
     returnDate?: SortOrder
     status?: SortOrder
     documentType?: SortOrder
+    price?: SortOrder
   }
 
   export type LoanSumOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     bookId?: SortOrder
+    price?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12215,6 +12352,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type RoleCreateNestedOneWithoutUsersInput = {
@@ -12561,6 +12714,14 @@ export namespace Prisma {
     set?: boolean
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type AuthorUpdateOneRequiredWithoutBooksNestedInput = {
     create?: XOR<AuthorCreateWithoutBooksInput, AuthorUncheckedCreateWithoutBooksInput>
     connectOrCreate?: AuthorCreateOrConnectWithoutBooksInput
@@ -12619,6 +12780,14 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutLoansNestedInput = {
@@ -12786,6 +12955,22 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -12795,6 +12980,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12809,6 +13005,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type RoleCreateWithoutUsersInput = {
@@ -12834,6 +13046,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
     book: BookCreateNestedOneWithoutLoansInput
   }
 
@@ -12844,6 +13057,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
   }
 
   export type LoanCreateOrConnectWithoutUserInput = {
@@ -12907,6 +13121,7 @@ export namespace Prisma {
     returnDate?: DateTimeNullableFilter<"Loan"> | Date | string | null
     status?: StringFilter<"Loan"> | string
     documentType?: StringFilter<"Loan"> | string
+    price?: FloatNullableFilter<"Loan"> | number | null
   }
 
   export type UserCreateWithoutRoleInput = {
@@ -13131,6 +13346,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     category: CategoryCreateNestedOneWithoutBooksInput
     loans?: LoanCreateNestedManyWithoutBookInput
@@ -13145,6 +13362,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     categoryId: number
     loans?: LoanUncheckedCreateNestedManyWithoutBookInput
@@ -13188,6 +13407,8 @@ export namespace Prisma {
     stock?: IntFilter<"Book"> | number
     available?: BoolFilter<"Book"> | boolean
     imageUrl?: StringNullableFilter<"Book"> | string | null
+    year?: StringNullableFilter<"Book"> | string | null
+    price?: FloatFilter<"Book"> | number
     createdAt?: DateTimeFilter<"Book"> | Date | string
     authorId?: IntFilter<"Book"> | number
     categoryId?: IntFilter<"Book"> | number
@@ -13201,6 +13422,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     author: AuthorCreateNestedOneWithoutBooksInput
     loans?: LoanCreateNestedManyWithoutBookInput
@@ -13215,6 +13438,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     authorId: number
     loans?: LoanUncheckedCreateNestedManyWithoutBookInput
@@ -13283,6 +13508,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
     user: UserCreateNestedOneWithoutLoansInput
   }
 
@@ -13293,6 +13519,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
   }
 
   export type LoanCreateOrConnectWithoutBookInput = {
@@ -13395,6 +13622,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     author: AuthorCreateNestedOneWithoutBooksInput
     category: CategoryCreateNestedOneWithoutBooksInput
@@ -13409,6 +13638,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     authorId: number
     categoryId: number
@@ -13466,6 +13697,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: AuthorUpdateOneRequiredWithoutBooksNestedInput
     category?: CategoryUpdateOneRequiredWithoutBooksNestedInput
@@ -13480,6 +13713,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: IntFieldUpdateOperationsInput | number
     categoryId?: IntFieldUpdateOperationsInput | number
@@ -13492,6 +13727,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
   }
 
   export type LoanUpdateWithoutUserInput = {
@@ -13499,6 +13735,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     book?: BookUpdateOneRequiredWithoutLoansNestedInput
   }
 
@@ -13509,6 +13746,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LoanUncheckedUpdateManyWithoutUserInput = {
@@ -13518,6 +13756,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type UserCreateManyRoleInput = {
@@ -13600,6 +13839,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     categoryId: number
   }
@@ -13612,6 +13853,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryUpdateOneRequiredWithoutBooksNestedInput
     loans?: LoanUpdateManyWithoutBookNestedInput
@@ -13626,6 +13869,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: IntFieldUpdateOperationsInput | number
     loans?: LoanUncheckedUpdateManyWithoutBookNestedInput
@@ -13640,6 +13885,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: IntFieldUpdateOperationsInput | number
   }
@@ -13653,6 +13900,8 @@ export namespace Prisma {
     stock?: number
     available?: boolean
     imageUrl?: string | null
+    year?: string | null
+    price?: number
     createdAt?: Date | string
     authorId: number
   }
@@ -13665,6 +13914,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: AuthorUpdateOneRequiredWithoutBooksNestedInput
     loans?: LoanUpdateManyWithoutBookNestedInput
@@ -13679,6 +13930,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: IntFieldUpdateOperationsInput | number
     loans?: LoanUncheckedUpdateManyWithoutBookNestedInput
@@ -13693,6 +13946,8 @@ export namespace Prisma {
     stock?: IntFieldUpdateOperationsInput | number
     available?: BoolFieldUpdateOperationsInput | boolean
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: IntFieldUpdateOperationsInput | number
   }
@@ -13704,6 +13959,7 @@ export namespace Prisma {
     returnDate?: Date | string | null
     status?: string
     documentType?: string
+    price?: number | null
   }
 
   export type LoanUpdateWithoutBookInput = {
@@ -13711,6 +13967,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     user?: UserUpdateOneRequiredWithoutLoansNestedInput
   }
 
@@ -13721,6 +13978,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type LoanUncheckedUpdateManyWithoutBookInput = {
@@ -13730,6 +13988,7 @@ export namespace Prisma {
     returnDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     documentType?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
 

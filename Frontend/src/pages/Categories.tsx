@@ -63,7 +63,6 @@ category.description ?? "Sin descripción"
 />
 )} </Card> </Col>
 
-```
       <Col xs={24} lg={8}>
         <Card title="Agregar categoría">
           <Form form={form} layout="vertical" onFinish={onFinish}>

@@ -43,7 +43,7 @@ router.post("/", auth_middleware_1.authenticateToken, books_middleware_1.authori
         return res.status(400).json({ error: error.message });
     }
 });
-router.put("/:id", auth_middleware_1.authenticateToken, books_middleware_1.authorizeBibliotecario, async (req, res) => {
+router.put("/:id", auth_middleware_1.authenticateToken, books_middleware_1.authorizeOnlyBibliotecario, async (req, res) => {
     try {
         const bookId = Number(req.params.id);
         const updated = await booksService.updateBook(bookId, req.body);
@@ -53,7 +53,7 @@ router.put("/:id", auth_middleware_1.authenticateToken, books_middleware_1.autho
         return res.status(400).json({ error: error.message });
     }
 });
-router.delete("/:id", auth_middleware_1.authenticateToken, books_middleware_1.authorizeBibliotecario, async (req, res) => {
+router.delete("/:id", auth_middleware_1.authenticateToken, books_middleware_1.authorizeOnlyBibliotecario, async (req, res) => {
     try {
         const bookId = Number(req.params.id);
         const result = await booksService.deleteBook(bookId);

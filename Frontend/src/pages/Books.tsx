@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Layout from "../components/Layout";
+import { BookOutlined, DownOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getBooks,
@@ -9,6 +10,8 @@ import {
   createBook,
   createLoan,
   getBookLoanStatus,
+  updateBook,
+  deleteBook,
 } from "../services/api";
 import {
   Card,
@@ -24,6 +27,8 @@ import {
   InputNumber,
   Select,
   Spin,
+  Dropdown,
+  Popconfirm,
 } from "antd";
 
 const { Title, Paragraph } = Typography;
@@ -32,18 +37,17 @@ export default function Books() {
   const { user, hasRole } = useAuth();
   const queryClient = useQueryClient();
 
-  const [filters, setFilters] = useState({
-    title: "",
-    author: "",
-    year: "",
-    publisher: "",
-    keywords: "",
-  });
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedEditorial, setSelectedEditorial] = useState<string | null>(null);
 
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [loanStatus, setLoanStatus] = useState<any>(null);
-  const [docType, setDocType] = useState("DNI/Cédula");
+  const [docType, setDocType] = useState<string | undefined>(undefined);
   const [form] = Form.useForm();
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm] = Form.useForm();
 
   // ✅ QUERIES
   const booksQuery = useQuery({
@@ -91,83 +95,98 @@ export default function Books() {
     },
   });
 
+  const updateBookMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) => updateBook(id, data),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      setSelectedBook(data);
+      setIsEditing(false);
+      message.success("Libro actualizado correctamente");
+    },
+    onError: (error: any) => {
+      message.error(error?.message || "No se pudo actualizar el libro");
+    },
+  });
+
+  const deleteBookMutation = useMutation({
+    mutationFn: (id: number) => deleteBook(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      setSelectedBook(null);
+      setIsEditing(false);
+      message.success("Libro eliminado correctamente");
+    },
+    onError: (error: any) => {
+      message.error(error?.message || "No se pudo eliminar el libro");
+    },
+  });
+
   const books = booksQuery.data ?? [];
   const authors = authorsQuery.data ?? [];
   const categories = categoriesQuery.data ?? [];
 
+  const uniqueEditorials = useMemo(() => {
+    const editorials = books.map((b: any) => b.editorial).filter(Boolean);
+    return Array.from(new Set(editorials)) as string[];
+  }, [books]);
+
   const filteredBooks = useMemo(() => {
-    const query = {
-      title: filters.title,
-      author: filters.author,
-      year: filters.year ? Number(filters.year) : undefined,
-      publisher: filters.publisher,
-      keywords: filters.keywords
-        ? filters.keywords.split(" ").filter(Boolean)
-        : undefined,
-    };
-
     return books.filter((book: any) => {
-      if (
-        query.title &&
-        !book.title.toLowerCase().includes(query.title.toLowerCase())
-      )
-        return false;
-
-      if (
-        query.author &&
-        !book.author?.name.toLowerCase().includes(query.author.toLowerCase())
-      )
-        return false;
-
-      if (
-        query.year &&
-        Number(
-          book.createdAt
-            ? new Date(book.createdAt).getFullYear()
-            : 0
-        ) !== query.year
-      )
-        return false;
-
-      if (
-        query.publisher &&
-        !(book.editorial || "")
-          .toLowerCase()
-          .includes(query.publisher.toLowerCase())
-      )
-        return false;
-
-      if (query.keywords && query.keywords.length > 0) {
-        const bookKeywords = book.category?.name
-          ? [book.category.name.toLowerCase()]
-          : [];
-
-        if (
-          !query.keywords.some((k: string) =>
-            bookKeywords.some((bk: string) =>
-              bk.includes(k.toLowerCase())
-            )
-          )
-        )
+      if (searchText) {
+        const normSearch = searchText.toLowerCase();
+        const matchesTitle = book.title?.toLowerCase().includes(normSearch);
+        const matchesAuthor = book.author?.name?.toLowerCase().includes(normSearch);
+        const matchesYear = book.year && String(book.year).toLowerCase().includes(normSearch);
+        const matchesEditorial = book.editorial?.toLowerCase().includes(normSearch);
+        if (!matchesTitle && !matchesAuthor && !matchesYear && !matchesEditorial) {
           return false;
+        }
+      }
+
+      if (selectedCategoryId && book.categoryId !== selectedCategoryId) {
+        return false;
+      }
+
+      if (selectedEditorial && book.editorial !== selectedEditorial) {
+        return false;
       }
 
       return true;
     });
-  }, [books, filters]);
+  }, [books, searchText, selectedCategoryId, selectedEditorial]);
 
-  const handleSearch = (values: any) => {
-    setFilters({
-      title: values.title ?? "",
-      author: values.author ?? "",
-      year: values.year ? String(values.year) : "",
-      publisher: values.publisher ?? "",
-      keywords: values.keywords ?? "",
-    });
+  const handleClearFilters = () => {
+    setSearchText("");
+    setSelectedCategoryId(null);
+    setSelectedEditorial(null);
   };
+
+  const filterMenuItems = useMemo(() => {
+    return [
+      {
+        key: "categories",
+        label: "Categoría",
+        children: categories.map((cat: any) => ({
+          key: `cat-${cat.id}`,
+          label: selectedCategoryId === cat.id ? `✓ ${cat.name}` : cat.name,
+          onClick: () => setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id),
+        })),
+      },
+      {
+        key: "editorials",
+        label: "Editorial",
+        children: uniqueEditorials.map((ed: string) => ({
+          key: `ed-${ed}`,
+          label: selectedEditorial === ed ? `✓ ${ed}` : ed,
+          onClick: () => setSelectedEditorial(selectedEditorial === ed ? null : ed),
+        })),
+      },
+    ];
+  }, [categories, uniqueEditorials, selectedCategoryId, selectedEditorial]);
 
   const handleSelect = (book: any) => {
     setSelectedBook(book);
+    setIsEditing(false);
 
     if (book?.id) {
       getBookLoanStatus(book.id)
@@ -180,6 +199,10 @@ export default function Books() {
 
   const handleRent = () => {
     if (!selectedBook) return;
+    if (!docType) {
+      message.error("Debe ingresar una identificación para continuar con el préstamo");
+      return;
+    }
     createLoanMutation.mutate(selectedBook.id);
   };
 
@@ -194,8 +217,35 @@ export default function Books() {
       description: values.description,
       editorial: values.editorial,
       stock: Number(values.stock),
+      year: values.year,
+      imageUrl: values.imageUrl,
+      price: values.price ? Number(values.price) : 0,
       available: true,
     });
+  };
+
+  const onUpdateBook = (values: any) => {
+    if (!selectedBook) return;
+    updateBookMutation.mutate({
+      id: selectedBook.id,
+      data: {
+        title: values.title,
+        isbn: selectedBook.isbn,
+        authorId: Number(values.authorId),
+        categoryId: Number(values.categoryId),
+        description: values.description,
+        editorial: values.editorial,
+        stock: Number(values.stock),
+        year: values.year,
+        imageUrl: values.imageUrl,
+        price: Number(values.price),
+      },
+    });
+  };
+
+  const handleDeleteBook = () => {
+    if (!selectedBook) return;
+    deleteBookMutation.mutate(selectedBook.id);
   };
 
   if (
@@ -216,56 +266,34 @@ export default function Books() {
     <Layout>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <Card>
-          <Row gutter={[16, 16]} align="middle">
-            <Col xs={24} lg={16}>
-              <Title level={4}>Catálogo de Libros</Title>
-              <Paragraph>
-                Busca por título, autor, año, editorial o categoría.
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+            <div>
+              <Title level={3} style={{ margin: 0 }}>Catálogo de Libros</Title>
+              <Paragraph style={{ margin: 0 }} type="secondary">
+                Encuentra y alquila tus lecturas favoritas.
               </Paragraph>
-            </Col>
-
-            <Col xs={24} lg={8}>
-              <Form layout="vertical" onFinish={handleSearch}>
-                <Row gutter={8}>
-                  <Col span={24}>
-                    <Form.Item name="title" label="Título">
-                      <Input allowClear />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={24}>
-                    <Form.Item name="author" label="Autor">
-                      <Input allowClear />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={24}>
-                    <Form.Item name="year" label="Año">
-                      <InputNumber style={{ width: "100%" }} />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={24}>
-                    <Form.Item name="publisher" label="Editorial">
-                      <Input allowClear />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={24}>
-                    <Form.Item name="keywords" label="Categoría">
-                      <Input allowClear />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" block>
-                    Buscar
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Col>
-          </Row>
+            </div>
+            
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+              <Input.Search
+                placeholder="Buscar por título, autor, año..."
+                allowClear
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: 280 }}
+              />
+              <Dropdown menu={{ items: filterMenuItems }} trigger={["click"]}>
+                <Button icon={<DownOutlined />}>
+                  Filtrar por...
+                </Button>
+              </Dropdown>
+              {(selectedCategoryId || selectedEditorial || searchText) && (
+                <Button type="link" danger onClick={handleClearFilters} style={{ paddingLeft: 8 }}>
+                  Limpiar filtros
+                </Button>
+              )}
+            </div>
+          </div>
         </Card>
 
         <Row gutter={[16, 16]}>
@@ -279,8 +307,21 @@ export default function Books() {
                     style={{ cursor: "pointer" }}
                   >
                     <List.Item.Meta
+                      avatar={
+                        book.imageUrl ? (
+                          <img
+                            src={book.imageUrl}
+                            alt={book.title}
+                            style={{ width: 40, height: 50, objectFit: "cover", borderRadius: 4 }}
+                          />
+                        ) : (
+                          <div style={{ width: 40, height: 50, background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 4 }}>
+                            <BookOutlined style={{ color: "#bfbfbf" }} />
+                          </div>
+                        )
+                      }
                       title={book.title}
-                      description={`${book.author?.name ?? "Autor desconocido"} · ${book.category?.name ?? "Sin categoría"}`}
+                      description={`${book.author?.name ?? "Autor desconocido"} · ${book.category?.name ?? "Sin categoría"} ${book.year ? `· (${book.year})` : ""} · $${book.price ? book.price.toFixed(2) : "0.00"}`}
                     />
                     <Badge
                       status={book.available ? "success" : "error"}
@@ -293,58 +334,196 @@ export default function Books() {
           </Col>
 
           <Col xs={24} lg={8}>
-            <Card title="Detalle">
+            <Card title={isEditing ? "Editar Libro" : "Detalle del Libro"}>
               {selectedBook ? (
-                <>
-                  <Title level={5}>{selectedBook.title}</Title>
-                  <Paragraph>
-                    <strong>Autor:</strong>{" "}
-                    {selectedBook.author?.name ?? "N/A"}
-                  </Paragraph>
-                  <Paragraph>
-                    <strong>Categoría:</strong>{" "}
-                    {selectedBook.category?.name ?? "N/A"}
-                  </Paragraph>
-                  <Paragraph>
-                    <strong>Editorial:</strong>{" "}
-                    {selectedBook.editorial ?? "N/A"}
-                  </Paragraph>
+                isEditing ? (
+                  <Form
+                    form={editForm}
+                    layout="vertical"
+                    initialValues={{
+                      title: selectedBook.title,
+                      authorId: selectedBook.authorId,
+                      categoryId: selectedBook.categoryId,
+                      editorial: selectedBook.editorial,
+                      year: selectedBook.year,
+                      price: selectedBook.price,
+                      stock: selectedBook.stock,
+                      imageUrl: selectedBook.imageUrl,
+                      description: selectedBook.description,
+                    }}
+                    onFinish={onUpdateBook}
+                  >
+                    <Form.Item name="title" label="Título" required>
+                      <Input />
+                    </Form.Item>
 
-                  {selectedBook.available ? (
-                    <>
-                      <div style={{ marginBottom: 8 }}>
-                        <span style={{ fontSize: "12px", color: "#8c8c8c" }}>Documento a entregar:</span>
-                      </div>
+                    <Form.Item name="authorId" label="Autor" required>
                       <Select
-                        value={docType}
-                        onChange={setDocType}
-                        style={{ width: "100%", marginBottom: 16 }}
-                        options={[
-                          { label: "DNI/Cédula", value: "DNI/Cédula" },
-                          { label: "Carnet Estudiantil", value: "Carnet Estudiantil" },
-                          { label: "Carnet de Profesor", value: "Carnet de Profesor" },
-                          { label: "Pasaporte", value: "Pasaporte" },
-                        ]}
+                        options={authors.map((a: any) => ({
+                          label: a.name,
+                          value: a.id,
+                        }))}
                       />
-                      <Button
-                        type="primary"
-                        block
-                        onClick={handleRent}
-                        loading={createLoanMutation.isPending}
-                      >
-                        Alquilar
+                    </Form.Item>
+
+                    <Form.Item name="categoryId" label="Categoría" required>
+                      <Select
+                        options={categories.map((c: any) => ({
+                          label: c.name,
+                          value: c.id,
+                        }))}
+                      />
+                    </Form.Item>
+
+                    <Form.Item name="editorial" label="Editorial">
+                      <Input />
+                    </Form.Item>
+
+                    <Form.Item name="year" label="Año de publicación">
+                      <Input />
+                    </Form.Item>
+
+                    <Form.Item name="price" label="Precio de catálogo" required>
+                      <InputNumber style={{ width: "100%" }} min={0} precision={2} prefix="$" />
+                    </Form.Item>
+
+                    <Form.Item name="stock" label="Stock disponible" required>
+                      <InputNumber style={{ width: "100%" }} min={0} />
+                    </Form.Item>
+
+                    <Form.Item name="imageUrl" label="URL de portada">
+                      <Input />
+                    </Form.Item>
+
+                    <Form.Item name="description" label="Descripción">
+                      <Input.TextArea />
+                    </Form.Item>
+
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <Button type="primary" htmlType="submit" block loading={updateBookMutation.isPending}>
+                        Guardar
                       </Button>
-                    </>
-                  ) : (
+                      <Button onClick={() => setIsEditing(false)} block>
+                        Cancelar
+                      </Button>
+                    </div>
+                  </Form>
+                ) : (
+                  <>
+                    {selectedBook.imageUrl && (
+                      <div style={{ textAlign: "center", marginBottom: 16 }}>
+                        <img
+                          src={selectedBook.imageUrl}
+                          alt={selectedBook.title}
+                          style={{ maxWidth: "100%", maxHeight: 200, objectFit: "cover", borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+                        />
+                      </div>
+                    )}
+                    <Title level={5} style={{ marginTop: 0 }}>{selectedBook.title}</Title>
                     <Paragraph>
-                      {loanStatus?.dueDate
-                        ? `Entrega: ${new Date(
-                            loanStatus.dueDate
-                          ).toLocaleDateString()}`
-                        : "No disponible"}
+                      <strong>Autor:</strong> {selectedBook.author?.name ?? "N/A"}
                     </Paragraph>
-                  )}
-                </>
+                    <Paragraph>
+                      <strong>Categoría:</strong> {selectedBook.category?.name ?? "N/A"}
+                    </Paragraph>
+                    <Paragraph>
+                      <strong>Editorial:</strong> {selectedBook.editorial ?? "N/A"}
+                    </Paragraph>
+                    <Paragraph>
+                      <strong>Año de publicación:</strong> {selectedBook.year ?? "N/A"}
+                    </Paragraph>
+                    <Paragraph>
+                      <strong>Precio de catálogo:</strong> ${selectedBook.price ? selectedBook.price.toFixed(2) : "0.00"}
+                    </Paragraph>
+                    <Paragraph>
+                      <strong>Cantidad disponible:</strong> {selectedBook.stock ?? 0} unidades
+                    </Paragraph>
+
+                    {user && (
+                      <div style={{ marginTop: 16, marginBottom: 16, padding: "12px", background: "#f6ffed", border: "1px solid #b7eb8f", borderRadius: 8 }}>
+                        <div style={{ fontSize: "11px", color: "#8c8c8c", textTransform: "uppercase", fontWeight: "bold" }}>
+                          Tu Descuento ({user.role})
+                        </div>
+                        <div style={{ fontSize: "16px", color: "#52c41a", fontWeight: "bold", marginTop: 4 }}>
+                          {user.role?.toLowerCase() === "profesor" 
+                            ? "Gratis ($0.00) — 100% desc." 
+                            : user.role?.toLowerCase() === "estudiante" 
+                            ? `$${((selectedBook.price || 0) * 0.5).toFixed(2)} — 50% desc.` 
+                            : `$${(selectedBook.price || 0).toFixed(2)} — 0% desc.`}
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedBook.available ? (
+                      <>
+                        <div style={{ marginBottom: 8, marginTop: 12 }}>
+                          <span style={{ fontSize: "12px", color: "#8c8c8c" }}>Documento a entregar:</span>
+                        </div>
+                        <Select
+                          placeholder="Selecciona una identificación"
+                          value={docType}
+                          onChange={setDocType}
+                          style={{ width: "100%", marginBottom: 16 }}
+                          options={[
+                            { label: "DNI/Cédula", value: "DNI/Cédula" },
+                            { label: "Carnet Estudiantil", value: "Carnet Estudiantil" },
+                            { label: "Carnet de Profesor", value: "Carnet de Profesor" },
+                            { label: "Pasaporte", value: "Pasaporte" },
+                          ]}
+                        />
+                        <Button
+                          type="primary"
+                          block
+                          onClick={handleRent}
+                          loading={createLoanMutation.isPending}
+                          disabled={!docType}
+                        >
+                          Alquilar
+                        </Button>
+                      </>
+                    ) : (
+                      <Paragraph style={{ marginTop: 12 }}>
+                        {loanStatus?.dueDate
+                          ? `Entrega: ${new Date(
+                              loanStatus.dueDate
+                            ).toLocaleDateString()}`
+                          : "No disponible"}
+                      </Paragraph>
+                    )}
+
+                    {hasRole("bibliotecario") && (
+                      <div style={{ display: "flex", gap: "8px", marginTop: 24, borderTop: "1px solid #f0f0f0", paddingTop: 16 }}>
+                        <Button type="default" onClick={() => {
+                          editForm.setFieldsValue({
+                            title: selectedBook.title,
+                            authorId: selectedBook.authorId,
+                            categoryId: selectedBook.categoryId,
+                            editorial: selectedBook.editorial,
+                            year: selectedBook.year,
+                            price: selectedBook.price,
+                            stock: selectedBook.stock,
+                            imageUrl: selectedBook.imageUrl,
+                            description: selectedBook.description,
+                          });
+                          setIsEditing(true);
+                        }} block>
+                          Editar
+                        </Button>
+                        <Popconfirm
+                          title="¿Eliminar este libro?"
+                          description="Esta acción no se puede deshacer."
+                          onConfirm={handleDeleteBook}
+                          okText="Sí, eliminar"
+                          cancelText="No"
+                        >
+                          <Button type="primary" danger block>
+                            Eliminar
+                          </Button>
+                        </Popconfirm>
+                      </div>
+                    )}
+                  </>
+                )
               ) : (
                 <Paragraph>Selecciona un libro</Paragraph>
               )}
@@ -383,8 +562,20 @@ export default function Books() {
                     <InputNumber style={{ width: "100%" }} min={1} />
                   </Form.Item>
 
+                  <Form.Item name="price" label="Precio de catálogo" initialValue={15}>
+                    <InputNumber style={{ width: "100%" }} min={0} precision={2} prefix="$" />
+                  </Form.Item>
+
                    <Form.Item name="editorial" label="Editorial">
                     <Input />
+                  </Form.Item>
+
+                  <Form.Item name="year" label="Año de publicación">
+                    <Input placeholder="Ej: 1967, Año antiguo" />
+                  </Form.Item>
+
+                  <Form.Item name="imageUrl" label="URL de portada">
+                    <Input placeholder="Ej: /covers/cover_novela.png" />
                   </Form.Item>
 
                   <Form.Item name="description" label="Descripción">

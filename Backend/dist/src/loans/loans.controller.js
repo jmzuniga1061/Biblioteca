@@ -12,6 +12,9 @@ router.post("/", loans_middleware_1.authorizeLoanCreation, async (req, res) => {
         if (!req.user)
             return res.status(401).json({ error: "No autenticado" });
         const { bookId, documentType } = req.body;
+        if (!documentType || typeof documentType !== "string" || documentType.trim() === "") {
+            return res.status(400).json({ error: "Debe ingresar una identificación para continuar con el préstamo" });
+        }
         const loan = await loansService.createLoan(req.user.userId, req.user.roleName, Number(bookId), documentType);
         return res.status(201).json(loan);
     }

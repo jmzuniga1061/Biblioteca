@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { BooksService } from "./books.service";
 import { authenticateToken, AuthRequest } from "../auth/auth.middleware";
-import { authorizeBibliotecario } from "./books.middleware";
+import { authorizeBibliotecario, authorizeOnlyBibliotecario } from "./books.middleware";
 
 const router = Router();
 const booksService = new BooksService();
@@ -43,7 +43,7 @@ router.post("/", authenticateToken, authorizeBibliotecario, async (req: AuthRequ
   }
 });
 
-router.put("/:id", authenticateToken, authorizeBibliotecario, async (req: AuthRequest, res: Response) => {
+router.put("/:id", authenticateToken, authorizeOnlyBibliotecario, async (req: AuthRequest, res: Response) => {
   try {
     const bookId = Number(req.params.id);
     const updated = await booksService.updateBook(bookId, req.body);
@@ -53,7 +53,7 @@ router.put("/:id", authenticateToken, authorizeBibliotecario, async (req: AuthRe
   }
 });
 
-router.delete("/:id", authenticateToken, authorizeBibliotecario, async (req: AuthRequest, res: Response) => {
+router.delete("/:id", authenticateToken, authorizeOnlyBibliotecario, async (req: AuthRequest, res: Response) => {
   try {
     const bookId = Number(req.params.id);
     const result = await booksService.deleteBook(bookId);

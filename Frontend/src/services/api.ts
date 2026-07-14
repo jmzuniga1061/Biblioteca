@@ -105,6 +105,23 @@ body: JSON.stringify(book),
 return handleResponse(response);
 }
 
+export async function updateBook(id: number, book: any) {
+const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+method: "PUT",
+headers: authHeaders(),
+body: JSON.stringify(book),
+});
+return handleResponse(response);
+}
+
+export async function deleteBook(id: number) {
+const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+method: "DELETE",
+headers: authHeaders(),
+});
+return handleResponse(response);
+}
+
 // ==================
 // 📖 LOANS
 // ==================

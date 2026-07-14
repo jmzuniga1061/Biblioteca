@@ -18,6 +18,16 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
     navigate("/");
   };
 
+  const getDisplayName = () => {
+    if (!user) return "Usuario";
+    if (user.name === "Administrador por Defecto" || user.name === "Administrador por defecto" || user.name === "Administrador") {
+      return "Administrador";
+    }
+    return user.name;
+  };
+
+  const displayName = getDisplayName();
+
   const menuItems = [
     {
       key: "profile",
@@ -55,10 +65,10 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
       {user ? (
         <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
           <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: "#555", fontWeight: 500 }}>{user.name}</span>
+            <span style={{ color: "#555", fontWeight: 500 }}>{displayName}</span>
             <Avatar 
               size={40} 
-              src={`https://ui-avatars.com/api/?name=${user?.name ?? "User"}&background=1890ff&color=fff&size=40`} 
+              src={`https://ui-avatars.com/api/?name=${displayName}&background=1890ff&color=fff&size=40`} 
             />
           </div>
         </Dropdown>

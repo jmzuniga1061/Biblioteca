@@ -8,6 +8,7 @@ interface BookPayload {
   stock?: number;
   available?: boolean;
   imageUrl?: string;
+  year?: string;
   authorId: number;
   categoryId: number;
 }
@@ -52,6 +53,7 @@ export class BooksService {
         stock: data.stock ?? 1,
         available: data.available ?? true,
         imageUrl: data.imageUrl,
+        year: data.year,
         authorId: data.authorId,
         categoryId: data.categoryId,
       },
@@ -89,6 +91,7 @@ export class BooksService {
         stock: data.stock,
         available: data.available,
         imageUrl: data.imageUrl,
+        year: data.year,
         authorId: data.authorId,
         categoryId: data.categoryId,
       },
@@ -108,7 +111,6 @@ export class BooksService {
 
   async searchBooks(query?: string) {
     const normalized = query?.trim() ?? "";
-    const year = normalized ? Number(normalized) : NaN;
     const where = normalized
       ? {
           OR: [
@@ -116,18 +118,9 @@ export class BooksService {
             { description: { contains: normalized, mode: "insensitive" as const } },
             { isbn: { contains: normalized, mode: "insensitive" as const } },
             { editorial: { contains: normalized, mode: "insensitive" as const } },
+            { year: { contains: normalized, mode: "insensitive" as const } },
             { author: { name: { contains: normalized, mode: "insensitive" as const } } },
             { category: { name: { contains: normalized, mode: "insensitive" as const } } },
-            ...(Number.isFinite(year)
-              ? [
-                  {
-                    createdAt: {
-                      gte: new Date(year, 0, 1),
-                      lt: new Date(year + 1, 0, 1),
-                    },
-                  },
-                ]
-              : []),
           ],
         }
       : {};

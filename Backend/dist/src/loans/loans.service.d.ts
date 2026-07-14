@@ -1,19 +1,6 @@
 export declare class LoansService {
     activeLoansCount(userId: number): Promise<number>;
     findLoanById(loanId: number): Promise<{
-        book: {
-            id: number;
-            description: string | null;
-            title: string;
-            isbn: string;
-            editorial: string | null;
-            stock: number;
-            available: boolean;
-            imageUrl: string | null;
-            createdAt: Date;
-            authorId: number;
-            categoryId: number;
-        };
         user: {
             role: {
                 id: number;
@@ -23,72 +10,39 @@ export declare class LoansService {
         } & {
             id: number;
             name: string;
-            createdAt: Date;
             email: string;
             password: string;
             roleId: number;
+            createdAt: Date;
+        };
+        book: {
+            id: number;
+            price: number;
+            createdAt: Date;
+            description: string | null;
+            title: string;
+            isbn: string;
+            editorial: string | null;
+            stock: number;
+            available: boolean;
+            imageUrl: string | null;
+            year: string | null;
+            authorId: number;
+            categoryId: number;
         };
     } & {
-        id: number;
         userId: number;
         returnDate: Date | null;
+        id: number;
         bookId: number;
         loanDate: Date;
         status: string;
         documentType: string;
+        price: number | null;
     }>;
-    findLoansForUser(userId: number, roleName: string): Promise<({
-        book: {
-            id: number;
-            description: string | null;
-            title: string;
-            isbn: string;
-            editorial: string | null;
-            stock: number;
-            available: boolean;
-            imageUrl: string | null;
-            createdAt: Date;
-            authorId: number;
-            categoryId: number;
-        };
-        user: {
-            role: {
-                id: number;
-                name: string;
-                description: string | null;
-            };
-        } & {
-            id: number;
-            name: string;
-            createdAt: Date;
-            email: string;
-            password: string;
-            roleId: number;
-        };
-    } & {
-        id: number;
-        userId: number;
-        returnDate: Date | null;
-        bookId: number;
-        loanDate: Date;
-        status: string;
-        documentType: string;
-    })[]>;
+    findLoansForUser(userId: number, roleName: string): Promise<any>;
     createLoan(userId: number, roleName: string, bookId: number, documentType?: string): Promise<{
         loan: {
-            book: {
-                id: number;
-                description: string | null;
-                title: string;
-                isbn: string;
-                editorial: string | null;
-                stock: number;
-                available: boolean;
-                imageUrl: string | null;
-                createdAt: Date;
-                authorId: number;
-                categoryId: number;
-            };
             user: {
                 role: {
                     id: number;
@@ -98,24 +52,41 @@ export declare class LoansService {
             } & {
                 id: number;
                 name: string;
-                createdAt: Date;
                 email: string;
                 password: string;
                 roleId: number;
+                createdAt: Date;
+            };
+            book: {
+                id: number;
+                price: number;
+                createdAt: Date;
+                description: string | null;
+                title: string;
+                isbn: string;
+                editorial: string | null;
+                stock: number;
+                available: boolean;
+                imageUrl: string | null;
+                year: string | null;
+                authorId: number;
+                categoryId: number;
             };
         } & {
-            id: number;
             userId: number;
             returnDate: Date | null;
+            id: number;
             bookId: number;
             loanDate: Date;
             status: string;
             documentType: string;
+            price: number | null;
         };
         dueDate: Date;
         feePolicy: {
             maxDays: number;
             discount: string;
+            finalPrice: number;
         };
     }>;
     returnLoan(loanId: number, userId: number, roleName: string): Promise<{
@@ -127,6 +98,8 @@ export declare class LoansService {
     getBookLoanStatus(bookId: number): Promise<{
         book: {
             id: number;
+            price: number;
+            createdAt: Date;
             description: string | null;
             title: string;
             isbn: string;
@@ -134,7 +107,7 @@ export declare class LoansService {
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
+            year: string | null;
             authorId: number;
             categoryId: number;
         };
@@ -144,6 +117,8 @@ export declare class LoansService {
     } | {
         book: {
             id: number;
+            price: number;
+            createdAt: Date;
             description: string | null;
             title: string;
             isbn: string;
@@ -151,7 +126,7 @@ export declare class LoansService {
             stock: number;
             available: boolean;
             imageUrl: string | null;
-            createdAt: Date;
+            year: string | null;
             authorId: number;
             categoryId: number;
         };

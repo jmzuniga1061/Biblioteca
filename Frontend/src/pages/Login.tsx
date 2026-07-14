@@ -27,7 +27,18 @@ export default function Login() {
         <h1 className="login-title">Biblioteca Virtual</h1>
 
         <Form layout="vertical" onFinish={onFinish}>
-          <Form.Item name="email" label="Correo electrónico" rules={[{ required: true, type: "email" }]}> 
+          <Form.Item
+            name="email"
+            label="Correo electrónico"
+            rules={[
+              { required: true, message: "El correo electrónico es requerido" },
+              {
+                type: "email",
+                message: "Ingresa un correo electrónico válido",
+                transform: (value) => (typeof value === "string" ? value.trim() : value),
+              },
+            ]}
+          >
             <Input placeholder="usuario@example.com (ej: admin@example.com)" />
           </Form.Item>
 

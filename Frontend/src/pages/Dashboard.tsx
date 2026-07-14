@@ -128,16 +128,28 @@ export default function Dashboard() {
               cover={
                 <div
                   style={{
-                    height: "140px",
+                    height: "180px",
+                    position: "relative",
                     background: getGradient(book.title),
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "16px",
-                    position: "relative",
+                    overflow: "hidden",
                   }}
                 >
-                  <BookOutlined style={{ fontSize: "48px", color: "rgba(255,255,255,0.85)" }} />
+                  {book.imageUrl ? (
+                    <img
+                      src={book.imageUrl}
+                      alt={book.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <BookOutlined style={{ fontSize: "48px", color: "rgba(255,255,255,0.85)" }} />
+                  )}
                   <Badge
                     status={book.available ? "success" : "warning"}
                     text={book.available ? "Disponible" : "Prestado"}
@@ -148,6 +160,7 @@ export default function Dashboard() {
                       background: "rgba(255, 255, 255, 0.9)",
                       padding: "2px 8px",
                       borderRadius: "12px",
+                      zIndex: 1,
                     }}
                   />
                 </div>
@@ -169,11 +182,12 @@ export default function Dashboard() {
                   {book.title}
                 </Title>
                 <Paragraph type="secondary" style={{ margin: 0, fontSize: "13px" }}>
-                  Por: {book.author?.name ?? "Autor Desconocido"}
+                  Por: {book.author?.name ?? "Autor Desconocido"} {book.year ? `(${book.year})` : ""}
                 </Paragraph>
               </div>
-              <div style={{ borderTop: "1px solid #f0f0f0", marginTop: "12px", paddingTop: "8px", fontSize: "12px", color: "#8c8c8c" }}>
-                Editorial: {book.editorial ?? "N/A"}
+               <div style={{ borderTop: "1px solid #f0f0f0", marginTop: "12px", paddingTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", color: "#8c8c8c" }}>
+                <span>Editorial: {book.editorial ?? "N/A"}</span>
+                <span style={{ fontWeight: "bold", color: "#f5222d", fontSize: "14px" }}>${book.price ? book.price.toFixed(2) : "0.00"}</span>
               </div>
             </Card>
           </Col>
